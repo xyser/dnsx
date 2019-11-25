@@ -1,0 +1,289 @@
+package api
+
+import (
+	"net"
+	"strconv"
+	"strings"
+
+	"dnsx/model/dao"
+
+	"github.com/miekg/dns"
+)
+
+type DNSHandler struct{}
+
+func (h *DNSHandler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
+	//w.RemoteAddr()
+	msg := dns.Msg{}
+	msg.SetReply(r)
+	msg.Authoritative = true // 是否权威服务
+
+	switch r.Question[0].Qtype {
+	// 域名解析 IPV4,IPV6
+	case dns.TypeA:
+		domain := msg.Question[0].Name
+		rrs, err := dao.GetRecordByNameAndType(domain, r.Question[0].Qtype)
+		if err != nil {
+			break
+		}
+		for _, rr := range rrs {
+			msg.Answer = append(msg.Answer, &dns.A{
+				Hdr: dns.RR_Header{Name: r.Question[0].Name, Rrtype: r.Question[0].Qtype, Class: dns.ClassINET, Ttl: rr.TTL},
+				A:   net.ParseIP(rr.Value),
+			})
+		}
+	case dns.TypeAAAA:
+		domain := msg.Question[0].Name
+		rrs, err := dao.GetRecordByNameAndType(domain, r.Question[0].Qtype)
+		if err != nil {
+			break
+		}
+		for _, rr := range rrs {
+			msg.Answer = append(msg.Answer, &dns.AAAA{
+				Hdr:  dns.RR_Header{Name: r.Question[0].Name, Rrtype: r.Question[0].Qtype, Class: dns.ClassINET, Ttl: rr.TTL},
+				AAAA: net.ParseIP(rr.Value),
+			})
+		}
+	// IP 解析域名
+	case dns.TypePTR:
+		msg.Authoritative = true
+		ip := toQuestionTypePTRIP(r)
+
+		rrs, err := dao.GetRecord(map[string]interface{}{"type": "a", "value": ip})
+		if err != nil {
+			break
+		}
+		for _, rr := range rrs {
+			msg.Answer = append(msg.Answer, &dns.PTR{
+				Hdr: dns.RR_Header{Name: r.Question[0].Name, Rrtype: r.Question[0].Qtype, Class: dns.ClassINET, Ttl: rr.TTL},
+				Ptr: rr.Name,
+			})
+		}
+	case dns.TypeCNAME:
+		domain := msg.Question[0].Name
+		rrs, err := dao.GetRecordByNameAndType(domain, r.Question[0].Qtype)
+		if err != nil {
+			break
+		}
+		for _, rr := range rrs {
+			msg.Answer = append(msg.Answer, &dns.CNAME{
+				Hdr:    dns.RR_Header{Name: r.Question[0].Name, Rrtype: r.Question[0].Qtype, Class: dns.ClassINET, Ttl: rr.TTL},
+				Target: rr.Value,
+			})
+		}
+	case dns.TypeNS:
+		domain := msg.Question[0].Name
+		rrs, err := dao.GetRecordByNameAndType(domain, r.Question[0].Qtype)
+		if err != nil {
+			break
+		}
+		for _, rr := range rrs {
+			msg.Answer = append(msg.Answer, &dns.NS{
+				Hdr: dns.RR_Header{Name: r.Question[0].Name, Rrtype: r.Question[0].Qtype, Class: dns.ClassINET, Ttl: rr.TTL},
+				Ns:  rr.Value,
+			})
+		}
+	case dns.TypeMX:
+		domain := msg.Question[0].Name
+		rrs, err := dao.GetRecordByNameAndType(domain, r.Question[0].Qtype)
+		if err != nil {
+			break
+		}
+		for _, rr := range rrs {
+			msg.Answer = append(msg.Answer, &dns.MX{
+				Hdr:        dns.RR_Header{Name: r.Question[0].Name, Rrtype: r.Question[0].Qtype, Class: dns.ClassINET, Ttl: rr.TTL},
+				Preference: uint16(rr.Priority),
+				Mx:         rr.Value,
+			})
+		}
+	case dns.TypeSRV:
+		domain := msg.Question[0].Name
+		rrs, err := dao.GetRecordByNameAndType(domain, r.Question[0].Qtype)
+		if err != nil {
+			break
+		}
+		for _, rr := range rrs {
+			// 优先级 权重 端口 目标地址 1 1 80 www.baidu.com
+			vs := strings.Split(rr.Value, " ")
+			var priority, weight, port uint64
+			if len(vs) == 4 {
+				priority, _ = strconv.ParseUint(vs[0], 16, 16)
+				weight, _ = strconv.ParseUint(vs[1], 16, 16)
+				port, _ = strconv.ParseUint(vs[2], 16, 16)
+			} else if len(vs) == 3 {
+				priority = uint64(rr.Priority)
+				weight, _ = strconv.ParseUint(vs[0], 16, 16)
+				port, _ = strconv.ParseUint(vs[1], 16, 16)
+			}
+			msg.Answer = append(msg.Answer, &dns.SRV{
+				Hdr:      dns.RR_Header{Name: r.Question[0].Name, Rrtype: r.Question[0].Qtype, Class: dns.ClassINET, Ttl: rr.TTL},
+				Priority: uint16(priority), // 优先级
+				Weight:   uint16(weight),   // 权重
+				Port:     uint16(port),     // 端口
+				Target:   vs[len(vs)-1],    // 对应目标地址,可以是域名或IP
+			})
+		}
+	case dns.TypeURI:
+		domain := msg.Question[0].Name
+		rrs, err := dao.GetRecordByNameAndType(domain, r.Question[0].Qtype)
+		if err != nil {
+			break
+		}
+		for _, rr := range rrs {
+			// 优先级 权重 端口 目标地址 1 1 80 www.baidu.com
+			vs := strings.Split(rr.Value, " ")
+			var priority, weight uint64
+			if len(vs) == 3 {
+				priority, _ = strconv.ParseUint(vs[0], 16, 16)
+				weight, _ = strconv.ParseUint(vs[1], 16, 16)
+			} else if len(vs) == 2 {
+				priority = uint64(rr.Priority)
+				weight, _ = strconv.ParseUint(vs[0], 16, 16)
+			}
+
+			// URI 协议解释: https://www.dynu.com/Resources/DNS-Records/URI-Record
+			msg.Answer = append(msg.Answer, &dns.URI{
+				Hdr:      dns.RR_Header{Name: r.Question[0].Name, Rrtype: r.Question[0].Qtype, Class: dns.ClassINET, Ttl: rr.TTL},
+				Priority: uint16(priority), // 优先级
+				Weight:   uint16(weight),   // 权重
+				Target:   vs[len(vs)-1],    // 对应目标地址,可以是域名或IP
+			})
+		}
+	case dns.TypeTXT:
+		domain := msg.Question[0].Name
+		rrs, err := dao.GetRecordByNameAndType(domain, r.Question[0].Qtype)
+		if err != nil {
+			break
+		}
+		for _, rr := range rrs {
+			msg.Answer = append(msg.Answer, &dns.TXT{
+				Hdr: dns.RR_Header{Name: r.Question[0].Name, Rrtype: r.Question[0].Qtype, Class: dns.ClassINET, Ttl: rr.TTL},
+				Txt: []string{rr.Value},
+			})
+		}
+	case dns.TypeCAA:
+		domain := msg.Question[0].Name
+		rrs, err := dao.GetRecordByNameAndType(domain, r.Question[0].Qtype)
+		if err != nil {
+			break
+		}
+		// CAA 协议解释: https://support.dnsimple.com/articles/caa-record/
+		// RFC 文档: https://tools.ietf.org/html/rfc6844#section-3
+		for _, rr := range rrs {
+			// 标志位[0,1] 标签位[issue,issuewild,iodef] 机构域
+			// domain.com. CAA 0 iodef mailto:admin@domain.com
+			vs := strings.Split(rr.Value, " ")
+			// 不够3位 不返回
+			if len(vs) < 3 {
+				continue
+			}
+
+			flag := 0
+			if vs[0] == "1" {
+				flag = 1
+			}
+			msg.Answer = append(msg.Answer, &dns.CAA{
+				Hdr:  dns.RR_Header{Name: r.Question[0].Name, Rrtype: r.Question[0].Qtype, Class: dns.ClassINET, Ttl: rr.TTL},
+				Flag: uint8(flag), // 标志位，严格校验 Tag 标签位
+				// Tag 标签位
+				// issue: 显式地授权单个证书颁发机构为主机名颁发证书（任何类型）。
+				// issuewild: 显式地授权单个证书颁发机构为主机名颁发通配符证书（并且仅通配符）。
+				// iodef: 指定证书颁发机构可以向其报告策略违规的URL。使用了事件对象描述交换格式（IODEF）格式
+				Tag:   vs[1], // 标签位，
+				Value: vs[2],
+			})
+		}
+	case dns.TypeTLSA: // TLSA记录格式: 保存证书关联数据
+		domain := msg.Question[0].Name
+		rrs, err := dao.GetRecordByNameAndType(domain, r.Question[0].Qtype)
+		if err != nil {
+			break
+		}
+		// TLSA 协议解释: https://www.dynu.com/Resources/DNS-Records/TLSA-Record
+		for _, rr := range rrs {
+			vs := strings.Split(rr.Value, " ")
+			// 不够3位 不返回
+			if len(vs) < 4 {
+				continue
+			}
+			usage, _ := strconv.ParseUint(vs[0], 8, 8)
+			selector, _ := strconv.ParseUint(vs[1], 8, 8)
+			match, _ := strconv.ParseUint(vs[2], 8, 8)
+
+			msg.Answer = append(msg.Answer, &dns.TLSA{
+				Hdr:          dns.RR_Header{Name: r.Question[0].Name, Rrtype: r.Question[0].Qtype, Class: dns.ClassINET, Ttl: rr.TTL},
+				Usage:        uint8(usage),    // 证书使用情况
+				Selector:     uint8(selector), // 选择器,0-完整证书,1-使用主题公钥
+				MatchingType: uint8(match),    // 匹配类型, 0-无哈希, 1-所选内容的SHA-256哈希,2-所选内容的SHA-512哈希
+				Certificate:  "",              // 证书关联数据
+			})
+		}
+	case dns.TypeHINFO:
+		domain := msg.Question[0].Name
+		rrs, err := dao.GetRecordByNameAndType(domain, r.Question[0].Qtype)
+		if err != nil {
+			break
+		}
+		for _, rr := range rrs {
+			vs := strings.Split(rr.Value, " ")
+			// 不够3位 不返回
+			if len(vs) < 2 {
+				continue
+			}
+			msg.Answer = append(msg.Answer, &dns.HINFO{
+				Hdr: dns.RR_Header{Name: r.Question[0].Name, Rrtype: r.Question[0].Qtype, Class: dns.ClassINET, Ttl: rr.TTL},
+				Cpu: vs[0],
+				Os:  vs[1],
+			})
+		}
+	}
+
+	// DNSSEC https://support.cloudflare.com/hc/zh-cn/articles/360006660072
+	// DNSSEC https://backreference.org/2010/11/17/dnssec-verification-with-dig/
+	// DNSSEC https://dnsviz.net/d/git.xyser.net/dnssec/
+	// ADDITIONAL https://www.jianshu.com/p/71f61652ec23
+	// 我所理解的 DNSSEC https://imlonghao.com/41.html
+	// 巧妙运用DNS及其安全扩展DNSSec https://zhuanlan.zhihu.com/p/52877648
+	// DNSSEC的概念及作用 https://www.cloudxns.net/Support/detail/id/1309.html
+	// https://tools.ietf.org/html/rfc6781
+
+	// 查询上游服务器
+	msg.Authoritative = false
+	if len(msg.Answer) == 0 {
+		c := new(dns.Client)
+
+		m := new(dns.Msg)
+		m.SetQuestion(dns.Fqdn(r.Question[0].Name), r.Question[0].Qtype)
+		m.RecursionDesired = true
+		r, _, _ := c.Exchange(m, net.JoinHostPort("8.8.8.8", "53"))
+		if r == nil {
+			dns.HandleFailed(w, r)
+			return
+		}
+
+		if r.Rcode == dns.RcodeSuccess {
+			msg.Answer = r.Answer
+		}
+	}
+	_ = w.WriteMsg(&msg)
+}
+
+// 提取 PTR 的 IP
+func toQuestionTypePTRIP(r *dns.Msg) string {
+	// 4.3.2.1.in-addr.arpa.
+	domain := r.Question[0].Name
+
+	// 移除后面 14个 字符
+	ip := domain[0 : len(domain)-14]
+	// 点号分割
+	ipArr := strings.Split(ip, ".")
+
+	// 翻转
+	var ipArr2 []string
+	for i := len(ipArr) - 1; i >= 0; i-- {
+		ipArr2 = append(ipArr2, ipArr[i])
+	}
+	// 拼接转IP
+	ip = strings.Join(ipArr2, ".")
+	return net.ParseIP(ip).String()
+}
