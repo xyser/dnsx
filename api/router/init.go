@@ -32,6 +32,7 @@ func Handler() *gin.Engine {
 	if config.GetBool("log.request_log") {
 		apiv1.Use(middleware.WriterLog())
 	}
+	apiv1.Use(middleware.Cors())
 
 	// 服务路由
 	apiv1.GET("/version", v1.Version)

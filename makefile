@@ -26,7 +26,7 @@ outcov:
 	go test  -v -count=1 -coverpkg=./... -test.short -coverprofile=coverage.out -timeout=10s `go list ./... | grep -v /vendor/` -json > report.json
 
 asset:
-	go-bindata -pkg asset -o internal/asset/bindata.go asset
+	go-bindata -pkg asset -o internal/asset/bindata.go asset scripts/sql/record.sql
 
 help:
 	@echo "make: compile packages and dependencies"

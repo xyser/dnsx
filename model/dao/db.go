@@ -8,6 +8,7 @@ import (
 	"sync"
 	"time"
 
+	"dnsx/internal/asset"
 	"dnsx/pkg/config"
 
 	"github.com/jinzhu/gorm"
@@ -33,5 +34,16 @@ func Init() {
 		db.DB().SetConnMaxLifetime(time.Minute * time.Duration(config.GetInt("mysql.conn_max_lifetime")))
 		db.DB().SetMaxIdleConns(config.GetInt("mysql.max_idle_conn"))
 		db.DB().SetMaxOpenConns(config.GetInt("mysql.max_open_conn"))
+
+		InitTable()
 	})
+}
+
+// InitTable 检查表是否存在并创建表
+func InitTable() {
+	if !db.HasTable(Record{}) {
+		if sql, err := asset.Asset("scripts/sql/record.sql"); err == nil {
+			db.Exec(string(sql))
+		}
+	}
 }
