@@ -4,7 +4,6 @@ import (
 	"context"
 	"os"
 	"sync"
-	"time"
 
 	"dnsx/pkg/config"
 
@@ -27,16 +26,16 @@ var levelType = map[string]zapcore.Level{
 	"error": zap.ErrorLevel,
 }
 
-// zlog logger 标准日志
-type zlog struct {
+// Logger logger 标准日志
+type Logger struct {
 	*zap.Logger
 }
 
-var zlogger = new(zlog)
+var logger = new(Logger)
 
 // Logger new Logger
-func Logger() *zlog {
-	return zlogger
+func New() *Logger {
+	return logger
 }
 
 // level 日志级别操作
@@ -45,36 +44,14 @@ var level = zap.NewAtomicLevel()
 // Setup init Logger
 func Init() {
 	once.Do(func() {
-		handle := lumberjack.Logger{
-			Filename:   getLogfilePath(),                // 日志文件路径
-			MaxSize:    viper.GetInt("log.max_size"),    // 每个日志文件保存的最大尺寸 单位：M
-			MaxBackups: viper.GetInt("log.max_backups"), // 日志文件最多保存多少个备份
-			MaxAge:     viper.GetInt("log.max_age"),     // 文件最多保存多少天
-			Compress:   true,                            // 是否压缩
-		}
-
-		encoderConfig := zapcore.EncoderConfig{
-			TimeKey:        "time",
-			LevelKey:       "level",
-			NameKey:        "category",
-			CallerKey:      "line",
-			MessageKey:     "msg",
-			StacktraceKey:  "stack",
-			LineEnding:     zapcore.DefaultLineEnding,
-			EncodeLevel:    zapcore.LowercaseLevelEncoder,
-			EncodeTime:     timeEncoder,
-			EncodeDuration: zapcore.SecondsDurationEncoder,
-			EncodeCaller:   zapcore.FullCallerEncoder,
-			EncodeName:     zapcore.FullNameEncoder,
-		}
 
 		SetLevel(config.GetString("log.log_level"))
 		core := zapcore.NewCore(
-			zapcore.NewJSONEncoder(encoderConfig),
-			zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stdout), zapcore.AddSync(&handle)),
+			encoder(),
+			zapcore.NewMultiWriteSyncer(writers()...),
 			level,
 		)
-		zlogger.Logger = zap.New(core, zap.AddCaller(), zap.Development()).
+		logger.Logger = zap.New(core, zap.AddCaller(), zap.Development()).
 			With(zap.String("app_name", config.GetString("app.name")))
 
 		// 注册配置变更事件
@@ -85,7 +62,7 @@ func Init() {
 }
 
 // WithCTX 从上下文中获取 trace-id 并在日志中加入 trace-id 字段
-func (l zlog) WithCTX(c context.Context) zlog {
+func (l Logger) WithContext(c context.Context) Logger {
 	id, ok := c.Value(TraceId).(string)
 	if !ok {
 		id = ""
@@ -118,7 +95,42 @@ func getLogfilePath() string {
 	return config.GetString("log.log_path") + config.GetString("log.log_file_name") + ".log"
 }
 
-// timeEncoder 日志时间格式化
-func timeEncoder(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
-	enc.AppendString(t.Format("2006-01-02 15:04:05"))
+// writers 日志输出
+func writers() (ws []zapcore.WriteSyncer) {
+	handle := lumberjack.Logger{
+		Filename:   getLogfilePath(),
+		MaxSize:    viper.GetInt("log.max_size"),
+		MaxBackups: viper.GetInt("log.max_backups"),
+		MaxAge:     viper.GetInt("log.max_age"),
+		Compress:   true,
+	}
+	ws = []zapcore.WriteSyncer{
+		zapcore.AddSync(&handle),
+	}
+	if viper.GetBool("log.stdout") {
+		ws = append(ws, zapcore.AddSync(os.Stdout))
+	}
+	return
+}
+
+// encoder 日志编码
+func encoder() zapcore.Encoder {
+	encoderConfig := zapcore.EncoderConfig{
+		TimeKey:        "time",
+		LevelKey:       "level",
+		NameKey:        "category",
+		CallerKey:      "line",
+		MessageKey:     "msg",
+		StacktraceKey:  "stack",
+		LineEnding:     zapcore.DefaultLineEnding,
+		EncodeLevel:    zapcore.LowercaseLevelEncoder,
+		EncodeTime:     zapcore.ISO8601TimeEncoder,
+		EncodeDuration: zapcore.SecondsDurationEncoder,
+		EncodeCaller:   zapcore.FullCallerEncoder,
+		EncodeName:     zapcore.FullNameEncoder,
+	}
+	if config.GetString("log.encoder") == "json" {
+		return zapcore.NewJSONEncoder(encoderConfig)
+	}
+	return zapcore.NewConsoleEncoder(encoderConfig)
 }

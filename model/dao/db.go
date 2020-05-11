@@ -29,7 +29,7 @@ func Init() {
 			fmt.Printf("\033[1;30;41m[error]\033[0m db [master] connect error: %s", err.Error())
 			os.Exit(1)
 		}
-		db.SetLogger(log.Logger())
+		db.SetLogger(log.New())
 		db.LogMode(config.GetBool("mysql.log_model"))
 		db.DB().SetConnMaxLifetime(time.Minute * time.Duration(config.GetInt("mysql.conn_max_lifetime")))
 		db.DB().SetMaxIdleConns(config.GetInt("mysql.max_idle_conn"))

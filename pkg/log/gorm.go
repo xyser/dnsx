@@ -26,7 +26,7 @@ func isPrintable(s string) bool {
 	return true
 }
 
-func (l *zlog) Print(values ...interface{}) {
+func (l *Logger) Print(values ...interface{}) {
 	if len(values) > 1 {
 		var (
 			sql             string

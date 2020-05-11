@@ -11,16 +11,18 @@ mysql:
   log_model: true
 
 api:
-  addr: :8080
+  addr: :8081
 
 log:
   log_path: ./logs/
   log_file_name: dnsx
   log_level: debug
+  encoder: json
   max_size: 1024
   max_backups: 3
   max_age: 7
   request_log: true
+  stdout: true
 
 pprof:
   open: false

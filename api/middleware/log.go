@@ -31,7 +31,7 @@ func WriterLog() gin.HandlerFunc {
 
 		latency := time.Since(start)
 		if c.Request.Method == http.MethodGet {
-			log.Logger().Named("http_request").Info(c.Request.RequestURI,
+			log.New().Named("http_request").Info(c.Request.RequestURI,
 				zap.String("method", c.Request.Method),
 				zap.String("path", c.Request.URL.Path),
 				zap.String("query", c.Request.URL.RawQuery),
@@ -40,7 +40,7 @@ func WriterLog() gin.HandlerFunc {
 				zap.Int64("latency", latency.Nanoseconds()/1e6),
 				zap.Any("response", blw.body.String()))
 		} else {
-			log.Logger().Named("http_request").Info(c.Request.RequestURI,
+			log.New().Named("http_request").Info(c.Request.RequestURI,
 				zap.String("method", c.Request.Method),
 				zap.String("path", c.Request.URL.Path),
 				zap.String("query", c.Request.URL.RawQuery),
