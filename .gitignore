@@ -88,5 +88,4 @@ fabric.properties
 
 # .env file
 .env
-pkg/pprof
-pkg/redis
+
