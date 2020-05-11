@@ -24,7 +24,7 @@ func Run() {
 	go func() {
 		err := udp.ListenAndServe()
 		if err != nil {
-			log.Fatalf("Start UDP listener on %s failed:%s\n", dnsAddr, err.Error())
+			log.Fatalf("\u001B[1;30;42m[info]\u001B[0m Start UDP listener on %s failed:%s\n", dnsAddr, err.Error())
 		}
 	}()
 
@@ -32,7 +32,7 @@ func Run() {
 	go func() {
 		err := tcp.ListenAndServe()
 		if err != nil {
-			log.Fatalf("Start TCP listener on %s failed:%s\n", dnsAddr, err.Error())
+			log.Fatalf("\u001B[1;30;42m[info]\u001B[0m Start TCP listener on %s failed:%s\n", dnsAddr, err.Error())
 		}
 	}()
 
@@ -40,22 +40,21 @@ func Run() {
 	addr := config.GetString("api.addr")
 	binding.Validator = validate.GinValidator()
 	srv := &http.Server{
-		Addr:    addr,
-		Handler: router.Handler(),
-		//ReadTimeout:    readTimeout,
-		//WriteTimeout:   writeTimeout,
+		Addr:           addr,
+		Handler:        router.Handler(),
 		MaxHeaderBytes: 1 << 20,
 	}
-	fmt.Printf("\033[1;30;42m[info]\033[0m start http server listening %s\n", addr)
+	fmt.Printf("\033[1;30;42m[info]\033[0m Start http server listening %s\n", addr)
 	go func() {
 		// 服务连接
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			fmt.Println("\033[1;30;41m[error]\033[0m start http server error: ", err.Error())
+			fmt.Println("\033[1;30;41m[error]\033[0m Start http server error: ", err.Error())
 			os.Exit(1)
 		}
 	}()
 
-	// 等待中断信号以优雅地关闭服务器（设置 5 秒的超时时间）
+	// Safe exit via signal
+	// 5 Second
 	quit := make(chan os.Signal)
 	signal.Notify(quit, os.Interrupt)
 	<-quit
@@ -63,10 +62,13 @@ func Run() {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
+
+	// HTTP Shutdown
 	if err := srv.Shutdown(ctx); err != nil {
 		fmt.Printf("\033[1;30;42m[info]\033[0m Api Shutdown: %s", err)
 	}
 
+	// DNS Shutdown
 	if err := udp.ShutdownContext(ctx); err != nil {
 		fmt.Printf("\033[1;30;42m[info]\033[0m UDP Shutdown: %s", err)
 	}
