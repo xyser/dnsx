@@ -34,7 +34,7 @@ func init() {
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	if err := RootCmd.Execute(); err != nil {
-		fmt.Println(err)
+		fmt.Printf("\033[1;30;42m[error]\033[0m commands execute error: %s", err)
 		os.Exit(1)
 	}
 }
