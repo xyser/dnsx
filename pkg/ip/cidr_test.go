@@ -1,9 +1,16 @@
 package ip
 
-import "testing"
+import (
+	"reflect"
+	"testing"
+)
 
 func TestCidr_GetCidrIpRange(t *testing.T) {
-	min, max := NewCidr("10.6.2.2/20").GetCidrIpRange()
+	cidr, err := NewCidr("10.6.2.2/20")
+	if err != nil {
+		t.Error(err)
+	}
+	min, max := cidr.GetCidrIpRange()
 
 	if min == "" {
 		t.Error("Min error")
@@ -19,7 +26,11 @@ func TestCidr_GetCidrIpRange(t *testing.T) {
 }
 
 func TestCidr_GetCidrHostNum(t *testing.T) {
-	count := NewCidr("10.6.2.2/20").GetCidrHostNum()
+	cidr, err := NewCidr("10.6.2.2/20")
+	if err != nil {
+		t.Error(err)
+	}
+	count := cidr.GetCidrHostNum()
 
 	if count == 0 {
 		t.Error("Count is nil")
@@ -29,27 +40,46 @@ func TestCidr_GetCidrHostNum(t *testing.T) {
 }
 
 func TestCidr_GetCidrIpMask(t *testing.T) {
-	data := NewCidr("10.6.2.2/20").GetCidrIpMask()
+	cidr, err := NewCidr("10.6.2.2/20")
+	if err != nil {
+		t.Error(err)
+	}
+	data := cidr.GetCidrIpMask()
 
-	if data.Netmask == "" {
+	if data == "" {
 		t.Error("Netmask is nil")
 	} else {
-		t.Log(data.Netmask)
+		t.Log(data)
 	}
 }
 
-func TestNewCidr(t *testing.T) {
-	min, max := NewCidr("10.6.2.2/20").GetCidrIpRange()
-
-	if min == "" {
-		t.Error("Min error")
-	} else {
-		t.Log("Min ", min)
+func TestNewCidr1(t *testing.T) {
+	type args struct {
+		ipRange string
 	}
-
-	if max == "" {
-		t.Error("Max error")
-	} else {
-		t.Log("Max ", max)
+	tests := []struct {
+		name    string
+		args    args
+		want    *Cidr
+		wantErr bool
+	}{
+		{
+			name:    "a",
+			args:    args{ipRange: "10.6.2.2/20"},
+			want:    &Cidr{},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := NewCidr(tt.args.ipRange)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("NewCidr() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("NewCidr() got = %v, want %v", got, tt.want)
+			}
+		})
 	}
 }

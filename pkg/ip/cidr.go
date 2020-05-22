@@ -1,18 +1,53 @@
 package ip
 
 import (
+	"encoding/binary"
+	"errors"
 	"fmt"
+	"net"
 	"strconv"
 	"strings"
 )
 
+// ErrNotSupportIPV6 不支持 IP V6
+var ErrNotSupportIPV6 = errors.New("does not support IPv6 addresses")
+
 type Cidr struct {
 	CidrIpRange string
+
+	maskLen int
+	ipBase  string
+
+	IP    net.IP
+	IPNet *net.IPNet
 }
 
-func NewCidr(ipRange string) *Cidr {
-	tmp := Cidr{CidrIpRange: ipRange}
-	return &tmp
+func NewCidr(ipRange string) (*Cidr, error) {
+	var cidr Cidr
+	var err error
+
+	if cidr.IP, cidr.IPNet, err = net.ParseCIDR(ipRange); err != nil {
+		return nil, err
+	}
+
+	cidr.maskLen, _ = cidr.IPNet.Mask.Size()
+	return &cidr, nil
+}
+
+// Contains 判断 CIDR 是否包含 某个IP
+func (c *Cidr) Contains(ip string) (ok bool, err error) {
+	oip := net.ParseIP(ip)
+	return c.IPNet.Contains(oip), nil
+}
+
+// LastAddr 获取一个 CIDR 的广播地址
+func (c *Cidr) LastAddr() (net.IP, error) { // works when the n is a prefix, otherwise...
+	if c.IPNet.IP.To4() == nil {
+		return net.IP{}, ErrNotSupportIPV6
+	}
+	ip := make(net.IP, len(c.IPNet.IP.To4()))
+	binary.BigEndian.PutUint32(ip, binary.BigEndian.Uint32(c.IPNet.IP.To4())|^binary.BigEndian.Uint32(net.IP(c.IPNet.Mask).To4()))
+	return ip, nil
 }
 
 // GetCidrIpRange 获取最大主机IP和最小主机IP
@@ -20,8 +55,8 @@ func (c *Cidr) GetCidrIpRange() (min, max string) {
 	ip := strings.Split(c.CidrIpRange, "/")[0]
 	ipSeg := strings.Split(ip, ".")
 	maskLen := c.GetMaskLen()
-	seg3MinIp, seg3MaxIp := c.GetIpSeg3Range(ipSeg, maskLen)
-	seg4MinIp, seg4MaxIp := c.GetIpSeg4Range(ipSeg, maskLen)
+	seg3MinIp, seg3MaxIp := getIpSeg3Range(ipSeg, maskLen)
+	seg4MinIp, seg4MaxIp := getIpSeg4Range(ipSeg, maskLen)
 	ipPrefix := ipSeg[0] + "." + ipSeg[1] + "."
 
 	min = ipPrefix + strconv.Itoa(seg3MinIp) + "." + strconv.Itoa(seg4MinIp)
@@ -41,8 +76,7 @@ func (c *Cidr) GetCidrHostNum() uint {
 
 // GetMaskLen CIDR地址 掩码长度
 func (c *Cidr) GetMaskLen() int {
-	maskLen, _ := strconv.Atoi(strings.Split(c.CidrIpRange, "/")[1])
-	return maskLen
+	return c.maskLen
 }
 
 // GetCidrIpMask 获取CIDR掩码
@@ -58,25 +92,25 @@ func (c *Cidr) GetCidrIpMask() string {
 	return fmt.Sprint(cidrMaskSeg1) + "." + fmt.Sprint(cidrMaskSeg2) + "." + fmt.Sprint(cidrMaskSeg3) + "." + fmt.Sprint(cidrMaskSeg4)
 }
 
-// GetIpSeg3Range 得到第三段IP的区间（第一片段.第二片段.第三片段.第四片段）
-func (c *Cidr) GetIpSeg3Range(ipSeg []string, maskLen int) (int, int) {
+// getIpSeg3Range 得到第三段IP的区间（第一片段.第二片段.第三片段.第四片段）
+func getIpSeg3Range(ipSeg []string, maskLen int) (int, int) {
 	if maskLen > 24 {
 		segIp, _ := strconv.Atoi(ipSeg[2])
 		return segIp, segIp
 	}
 	seg, _ := strconv.Atoi(ipSeg[2])
-	return c.GetIpSegRange(uint8(seg), uint8(24-maskLen))
+	return getIpSegRange(uint8(seg), uint8(24-maskLen))
 }
 
-// GetIpSeg4Range 得到第四段IP的区间（第一片段.第二片段.第三片段.第四片段）
-func (c *Cidr) GetIpSeg4Range(ipSeg []string, maskLen int) (int, int) {
+// getIpSeg4Range 得到第四段IP的区间（第一片段.第二片段.第三片段.第四片段）
+func getIpSeg4Range(ipSeg []string, maskLen int) (int, int) {
 	seg, _ := strconv.Atoi(ipSeg[3])
-	segMinIp, segMaxIp := c.GetIpSegRange(uint8(seg), uint8(32-maskLen))
+	segMinIp, segMaxIp := getIpSegRange(uint8(seg), uint8(32-maskLen))
 	return segMinIp + 1, segMaxIp
 }
 
-// GetIpSegRange 根据用户输入的基础IP地址和CIDR掩码计算一个IP片段的区间
-func (c *Cidr) GetIpSegRange(userSegIp, offset uint8) (int, int) {
+// getIpSegRange 根据用户输入的基础IP地址和CIDR掩码计算一个IP片段的区间
+func getIpSegRange(userSegIp, offset uint8) (int, int) {
 	var ipSegMax uint8 = 255
 	netSegIp := ipSegMax << offset
 	segMinIp := netSegIp & userSegIp
