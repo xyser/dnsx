@@ -25,7 +25,7 @@ func Init() {
 		// 设置配置文件目录和文件名
 		viper.AddConfigPath(".")
 		viper.AddConfigPath("./config")
-		viper.SetConfigName("config")
+		viper.SetConfigName("dnsx")
 
 		if len(CfgFile) > 0 {
 			viper.SetConfigFile(CfgFile)
