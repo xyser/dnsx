@@ -1,16 +1,19 @@
 .PHONY: server build lint help docker clean asset test
 
+lint:
+	golint ./..
+
+fmt:
+	go fmt .
+
 run:
 	go run . server --c config/config.yaml
 
-server:
-	go run . server
-
 build:
-	go build -race -ldflags "-s -w -X 'dnsx/api/controller/v1.BuildTime=`date +"%Y-%m-%d %H:%M:%S"`' -X dnsx/api/controller/v1.BuildVersion=1.0.1" -tags=jsoniter -o dnsx .
+	go build -race -ldflags "-s -w -X 'dnsx/api/controller/v1.BuildTime=`date +"%Y-%m-%d %H:%M:%S"`' -X dnsx/api/controller/v1.BuildVersion=`git rev-parse --short HEAD`" -tags=jsoniter -o dnsx .
 
-bl:
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags "-s -w -X 'dnsx/api/controller/v1.BuildTime=`date +"%Y-%m-%d %H:%M:%S"`' -X dnsx/api/controller/v1.BuildVersion=1.0.1" -tags=jsoniter -o dnsx.linux .
+build-linux:
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags "-s -w -X 'dnsx/api/controller/v1.BuildTime=`date +"%Y-%m-%d %H:%M:%S"`' -X dnsx/api/controller/v1.BuildVersion=`git rev-parse --short HEAD`" -tags=jsoniter -o dnsx.linux .
 	upx dnsx.linux
 
 docker:
@@ -20,10 +23,21 @@ clean:
 	go mod tidy
 
 test:
-	go test $(go list ./... | grep -v /vendor/) -v -count=1 -coverpkg=./...
+	go test $(go list ./... | grep -v /vendor/) -race -v -count=1 -coverpkg=./...
 
 outcov:
-	go test  -v -count=1 -coverpkg=./... -test.short -coverprofile=coverage.out -timeout=10s `go list ./... | grep -v /vendor/` -json > report.json
+	go test -race -v -count=1 -coverpkg=./... -test.short -coverprofile=coverage.out -timeout=10s `go list ./... | grep -v /vendor/` -json > report.json
+
+sonar: outcov
+	sonar-scanner \
+	  -Dsonar.projectKey=dnsx \
+	  -Dsonar.sources=. \
+	  -Dsonar.host.url=http://localhost:9000 \
+	  -Dsonar.login=57104c1d43f4f9ca4b51a11c46643843cb413bc3 \
+	  -Dsonar.sources.inclusions='**/*.go' \
+	  -Dsonar.exclusions='doc/**,**/*_test.go,**/vendor/**,.git/**,.glide/**,asset/**,internal/asset/**' \
+	  -Dsonar.tests=. -Dsonar.test.inclusions='**/*_test.go' -Dsonar.test.exclusions='**/vendor/**' \
+	  -Dsonar.go.tests.reportPaths=report.json  -Dsonar.go.coverage.reportPaths=coverage.out
 
 asset:
 	go-bindata -pkg asset -o internal/asset/bindata.go asset scripts/sql/record.sql
@@ -31,7 +45,7 @@ asset:
 help:
 	@echo "make: compile packages and dependencies"
 	@echo "  make run: go run at server"
-	@echo "  make server: go run at server"
+	@echo "  make asset: go-bindata tools"
 	@echo "  make build: go build"
-	@echo "  make lint: golint ./..."
-	@echo "  make clean: remove object files and cached files"
+	@echo "  make lint: go lint ./..."
+	@echo "  make clean: remove invalid go packages"
