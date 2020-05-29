@@ -88,4 +88,7 @@ fabric.properties
 
 # .env file
 .env
-
+.scannerwork
+vendor
+coverage.out
+report.json
