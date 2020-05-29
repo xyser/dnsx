@@ -4,8 +4,10 @@ import (
 	"net"
 	"strconv"
 	"strings"
+	"time"
 
 	"dnsx/model/dao"
+	"dnsx/pkg/network"
 
 	"github.com/miekg/dns"
 )
@@ -15,8 +17,13 @@ type DNSHandler struct{}
 func (h *DNSHandler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 	//w.RemoteAddr()
 	msg := dns.Msg{}
+	msg.Authoritative = true       // 是否权威服务
+	msg.RecursionAvailable = false // 是否递归查询响应
+
 	msg.SetReply(r)
-	msg.Authoritative = true // 是否权威服务
+	if len(r.Question) == 0 {
+		return
+	}
 
 	switch r.Question[0].Qtype {
 	// 域名解析 IPV4,IPV6
@@ -47,7 +54,7 @@ func (h *DNSHandler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 	// IP 解析域名
 	case dns.TypePTR:
 		msg.Authoritative = true
-		ip := toQuestionTypePTRIP(r)
+		ip := network.PTRToIP([]byte(msg.Question[0].Name))
 
 		rrs, err := dao.GetRecord(map[string]interface{}{"type": "a", "value": ip})
 		if err != nil {
@@ -248,14 +255,8 @@ func (h *DNSHandler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 	// https://tools.ietf.org/html/rfc6781
 
 	// 查询上游服务器
-	msg.Authoritative = false
-	if len(msg.Answer) == 0 {
-		c := new(dns.Client)
-
-		m := new(dns.Msg)
-		m.SetQuestion(dns.Fqdn(r.Question[0].Name), r.Question[0].Qtype)
-		m.RecursionDesired = true
-		r, _, _ := c.Exchange(m, net.JoinHostPort("8.8.8.8", "53"))
+	if len(msg.Answer) == 0 && msg.RecursionDesired {
+		r, _, _ := QuestionStream(r.Question[0].Name, r.Question[0].Qtype)
 		if r == nil {
 			dns.HandleFailed(w, r)
 			return
@@ -263,27 +264,27 @@ func (h *DNSHandler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 
 		if r.Rcode == dns.RcodeSuccess {
 			msg.Answer = r.Answer
+			if len(r.Ns) > 0 {
+				msg.Ns = r.Ns
+			}
+			if len(r.Extra) > 0 {
+				msg.Extra = r.Extra
+			}
 		}
+		// 本次查询非权威应答
+		msg.Authoritative = false
+		msg.RecursionAvailable = true // 是否递归查询响应
 	}
+
 	_ = w.WriteMsg(&msg)
 }
 
-// 提取 PTR 的 IP
-func toQuestionTypePTRIP(r *dns.Msg) string {
-	// 4.3.2.1.in-addr.arpa.
-	domain := r.Question[0].Name
-
-	// 移除后面 14个 字符
-	ip := domain[0 : len(domain)-14]
-	// 点号分割
-	ipArr := strings.Split(ip, ".")
-
-	// 翻转
-	var ipArr2 []string
-	for i := len(ipArr) - 1; i >= 0; i-- {
-		ipArr2 = append(ipArr2, ipArr[i])
-	}
-	// 拼接转IP
-	ip = strings.Join(ipArr2, ".")
-	return net.ParseIP(ip).String()
+// QuestionStream 询问上游服务器
+func QuestionStream(name string, qtype uint16) (r *dns.Msg, rtt time.Duration, err error) {
+	c := new(dns.Client)
+	m := new(dns.Msg)
+	// 设置递归查询
+	m.RecursionDesired = true
+	m.SetQuestion(dns.Fqdn(name), qtype)
+	return c.Exchange(m, net.JoinHostPort("8.8.8.8", "53"))
 }
