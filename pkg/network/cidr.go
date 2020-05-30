@@ -107,8 +107,8 @@ func getIPSeg3Range(ipSeg []string, maskLen int) (int, int) {
 // getIPSeg4Range 得到第四段IP的区间（第一片段.第二片段.第三片段.第四片段）
 func getIPSeg4Range(ipSeg []string, maskLen int) (int, int) {
 	seg, _ := strconv.Atoi(ipSeg[3])
-	segMinIp, segMaxIp := getIPSegRange(uint8(seg), uint8(32-maskLen))
-	return segMinIp + 1, segMaxIp
+	segMinIp, segMaxIP := getIPSegRange(uint8(seg), uint8(32-maskLen))
+	return segMinIp + 1, segMaxIP
 }
 
 // getIPSegRange 根据用户输入的基础IP地址和CIDR掩码计算一个IP片段的区间
@@ -116,6 +116,6 @@ func getIPSegRange(userSegIP, offset uint8) (int, int) {
 	var ipSegMax uint8 = 255
 	netSegIp := ipSegMax << offset
 	segMinIp := netSegIp & userSegIP
-	segMaxIp := userSegIP&(255<<offset) | ^(255 << offset)
-	return int(segMinIp), int(segMaxIp)
+	segMaxIP := userSegIP&(255<<offset) | ^(255 << offset)
+	return int(segMinIp), int(segMaxIP)
 }
