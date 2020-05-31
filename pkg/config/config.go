@@ -118,6 +118,13 @@ func GetStringMapStringSlice(key string) map[string][]string {
 // in bytes.
 func GetSizeInBytes(key string) uint { return viper.GetSizeInBytes(key) }
 
-func IsSet(key string) bool               { return viper.IsSet(key) }
+// IsSet checks to see if the key has been set in any of the data locations.
+// IsSet is case-insensitive for a key.
+func IsSet(key string) bool { return viper.IsSet(key) }
+
+// AllSettings merges all settings and returns them as a map[string]interface{}.
 func AllSettings() map[string]interface{} { return viper.AllSettings() }
-func AllKey() []string                    { return viper.AllKeys() }
+
+// AllKeys returns all keys holding a value, regardless of where they are set.
+// Nested keys are returned with a v.keyDelim (= ".") separator
+func AllKey() []string { return viper.AllKeys() }

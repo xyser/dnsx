@@ -14,7 +14,7 @@ var ErrNotSupportIPV6 = errors.New("does not support IPv6 addresses")
 
 // CIDR Classless Inter-Domain Routing
 type CIDR struct {
-	CidrIpRange string
+	IPRange string
 
 	maskLen int
 	ipBase  string
@@ -54,7 +54,7 @@ func (c *CIDR) LastAddr() (net.IP, error) { // works when the n is a prefix, oth
 
 // GetCIDRIPRange 获取最大主机IP和最小主机IP
 func (c *CIDR) GetCIDRIPRange() (min, max string) {
-	ip := strings.Split(c.CidrIpRange, "/")[0]
+	ip := strings.Split(c.IPRange, "/")[0]
 	ipSeg := strings.Split(ip, ".")
 	maskLen := c.GetMaskLen()
 	seg3MinIp, seg3MaxIp := getIPSeg3Range(ipSeg, maskLen)

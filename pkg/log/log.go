@@ -16,7 +16,7 @@ import (
 
 var once sync.Once
 
-const TraceId = "trace_id"
+const TraceID = "trace_id"
 
 // 日志级别
 var levelType = map[string]zapcore.Level{
@@ -63,11 +63,11 @@ func Init() {
 
 // WithCTX 从上下文中获取 trace-id 并在日志中加入 trace-id 字段
 func (l Logger) WithContext(c context.Context) Logger {
-	id, ok := c.Value(TraceId).(string)
+	id, ok := c.Value(TraceID).(string)
 	if !ok {
 		id = ""
 	}
-	l.Logger = l.With(zap.String(TraceId, id))
+	l.Logger = l.With(zap.String(TraceID, id))
 	return l
 }
 

@@ -26,7 +26,7 @@ func Create(c *gin.Context) {
 	var args = CreateArgs{}
 	if err := c.Bind(&args); err != nil {
 		if errors.As(err, &validator.ValidationErrors{}) {
-			c.JSON(http.StatusOK, v1.NewErrParamsResponse(err.Error()))
+			c.JSON(http.StatusOK, v1.NewErrMessageResponse(err.Error()))
 			return
 		}
 		c.JSON(http.StatusOK, v1.ErrFailParams)

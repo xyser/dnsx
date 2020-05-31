@@ -11,16 +11,19 @@ var (
 	ErrNotExist       = Response{Code: 1004, Message: "数据不存在"}
 )
 
+// HTTP Response
 type Response struct {
 	Code    int         `json:"code"`
 	Message string      `json:"message"`
 	Data    interface{} `json:"data,omitempty"`
 }
 
+// Error print response error
 func (e Response) Error() string {
 	return fmt.Sprintf(e.Message)
 }
 
+// NewErrResponse new error response
 func NewErrResponse(code int, message string) Response {
 	s := Response{}
 	s.Code = code
@@ -35,12 +38,15 @@ func NewResponseWithData(response Response, data interface{}) Response {
 	return s
 }
 
+// NewSucResponse new success data
 func NewSucResponse(data interface{}) Response {
 	s := SuccessResponse
 	s.Data = data
 	return s
 }
-func NewErrParamsResponse(message string) Response {
+
+// NewErrMessageResponse new error message
+func NewErrMessageResponse(message string) Response {
 	s := ErrMissParams
 	s.Message = message
 	return s

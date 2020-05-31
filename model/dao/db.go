@@ -2,16 +2,19 @@
 package dao
 
 import (
-	"dnsx/pkg/log"
 	"fmt"
 	"os"
 	"sync"
 	"time"
 
+	"dnsx/pkg/log"
+
 	"dnsx/internal/asset"
 	"dnsx/pkg/config"
 
 	"github.com/jinzhu/gorm"
+
+	// mysql
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 

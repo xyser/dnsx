@@ -34,24 +34,29 @@ var (
 	ErrTypeEnumKey = errors.New("type enum key error")
 )
 
+// TableName db table name
 func (Record) TableName() string {
 	return "records"
 }
 
+// CreateRecord insert db
 func CreateRecord(rr *Record) error {
 	return db.Create(&rr).Error
 }
 
+// GetNameRecord query name by db
 func GetNameRecord(name string) (rrs []Record, err error) {
 	err = db.Where("name = ?", name).Find(&rrs).Error
 	return
 }
 
+// GetRecord query db by where
 func GetRecord(where interface{}) (rrs []Record, err error) {
 	err = db.Where(where).Find(&rrs).Error
 	return
 }
 
+// GetRecordByNameAndType query db by name and type
 func GetRecordByNameAndType(name string, qtype uint16) (rrs []Record, err error) {
 	if types, ok := TypeEnum[qtype]; !ok {
 		return rrs, ErrTypeEnumKey

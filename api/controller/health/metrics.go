@@ -4,7 +4,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
-// https://blog.csdn.net/u014029783/article/details/80001251
+// ClusterManager link: https://blog.csdn.net/u014029783/article/details/80001251
 type ClusterManager struct {
 	Zone         string
 	RecordsCount *prometheus.Desc

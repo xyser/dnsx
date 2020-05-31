@@ -56,7 +56,7 @@ func IsPublicIP(IP net.IP) bool {
 }
 
 // IP 区间
-func Between(from net.IP, to net.IP, test net.IP) bool {
+func BetweenIP(from net.IP, to net.IP, test net.IP) bool {
 	if from == nil || to == nil || test == nil {
 		fmt.Println("An ip input is nil") // or return an error!?
 		return false
