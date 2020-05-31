@@ -24,6 +24,7 @@ jobs:
           chmod +x ./test-reporter
           ./test-reporter before-build
           go test -coverprofile c.out `go list ./... | grep -v /vendor/` -v -count=1 -coverpkg=./...
+          sed -i "s/dnsx\///g" c.out
           ./test-reporter format-coverage -t gocov
           ./test-reporter upload-coverage
         env:
