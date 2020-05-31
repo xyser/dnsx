@@ -25,15 +25,16 @@ type CIDR struct {
 
 // NewCIDR auto cidr string to struct
 func NewCIDR(ipRange string) (*CIDR, error) {
-	var CIDR CIDR
+	var cidr CIDR
 	var err error
 
-	if CIDR.IP, CIDR.IPNet, err = net.ParseCIDR(ipRange); err != nil {
+	if cidr.IP, cidr.IPNet, err = net.ParseCIDR(ipRange); err != nil {
 		return nil, err
 	}
 
-	CIDR.maskLen, _ = CIDR.IPNet.Mask.Size()
-	return &CIDR, nil
+	cidr.IPRange = ipRange
+	cidr.maskLen, _ = cidr.IPNet.Mask.Size()
+	return &cidr, nil
 }
 
 // Contains 判断 CIDR 是否包含 某个IP
