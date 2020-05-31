@@ -21,8 +21,6 @@ func TestToIP(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := ToIP(tt.args.i); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("ToIP() = %v, want %v", got, tt.want)
-			} else {
-				t.Logf("ToIP(3232286465) => %v", got)
 			}
 		})
 	}
@@ -43,8 +41,6 @@ func TestToInt(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := ToInt(tt.args.ip); got != tt.want {
 				t.Errorf("ToInt() = %v, want %v", got, tt.want)
-			} else {
-				t.Logf("ToInt(net.IPv4(192, 168, 199, 1)) => %v", got)
 			}
 		})
 	}
