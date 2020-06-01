@@ -8,7 +8,8 @@ import (
 	"github.com/miekg/dns"
 )
 
-func TestUpStream(t *testing.T) {
+//TestMultiQuestion Test multi question
+func TestMultiQuestion(t *testing.T) {
 	c := new(dns.Client)
 
 	m := new(dns.Msg)
@@ -29,4 +30,17 @@ func TestUpStream(t *testing.T) {
 	fmt.Println(r, err)
 
 	fmt.Printf("%+v", m.Question)
+}
+
+// TestSing Test DNSKEY
+func TestSing(t *testing.T) {
+	c := new(dns.Client)
+
+	m := new(dns.Msg)
+	m.SetEdns0(4096, true)
+	m.AuthenticatedData = true
+	m.SetQuestion(dns.Fqdn("paypal.com"), dns.TypeDNSKEY)
+	//m.SetQuestion(dns.Fqdn("taobao.com"), dns.TypeHINFO)
+	r, _, err := c.Exchange(m, net.JoinHostPort("8.8.8.8", "53"))
+	fmt.Println(r, err)
 }

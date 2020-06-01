@@ -256,19 +256,19 @@ func (h *DNSHandler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 
 	// 查询上游服务器
 	if len(msg.Answer) == 0 && msg.RecursionDesired {
-		r, _, _ := QuestionStream(r.Question[0].Name, r.Question[0].Qtype)
+		qr, _, _ := QuestionStream(r.Question[0].Name, r.Question[0].Qtype)
 		if r == nil {
 			dns.HandleFailed(w, r)
 			return
 		}
 
-		if r.Rcode == dns.RcodeSuccess {
-			msg.Answer = r.Answer
-			if len(r.Ns) > 0 {
-				msg.Ns = r.Ns
+		if qr.Rcode == dns.RcodeSuccess {
+			msg.Answer = qr.Answer
+			if len(qr.Ns) > 0 {
+				msg.Ns = qr.Ns
 			}
-			if len(r.Extra) > 0 {
-				msg.Extra = r.Extra
+			if len(qr.Extra) > 0 {
+				msg.Extra = qr.Extra
 			}
 		}
 		// 本次查询非权威应答
@@ -283,8 +283,10 @@ func (h *DNSHandler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 func QuestionStream(name string, qtype uint16) (r *dns.Msg, rtt time.Duration, err error) {
 	c := new(dns.Client)
 	m := new(dns.Msg)
+	// 启用 EDNS
+	m.SetEdns0(4096, true)
+	m.AuthenticatedData = true
 	// 设置递归查询
-	m.RecursionDesired = true
 	m.SetQuestion(dns.Fqdn(name), qtype)
 	return c.Exchange(m, net.JoinHostPort("8.8.8.8", "53"))
 }
