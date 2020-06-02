@@ -18,13 +18,17 @@ jobs:
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
 
+      - name: Go Mod Tidy
+        run: |
+          go mod tidy
+
       - name: Codeclimate
         run: |
           curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./test-reporter
           chmod +x ./test-reporter
           ./test-reporter before-build
-          go test -coverprofile c.out `go list ./... | grep -v /vendor/` -v -count=1 -coverpkg=./...
-          sed -i "s/dnsx\///g" c.out
+          go test -coverprofile c.out `go list ./... | grep -v /vendor/` -count=1 -coverpkg=./...
+          sed -i "s/github.com\/dingdayu\/dnsx\///g" c.out
           ./test-reporter format-coverage -t gocov
           ./test-reporter upload-coverage
         env:
