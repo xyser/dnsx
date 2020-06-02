@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"os"
 
-	"dnsx/cmd/api"
-	"dnsx/pkg/config"
-	"dnsx/pkg/log"
+	"github.com/dingdayu/dnsx/cmd/api"
+	"github.com/dingdayu/dnsx/cmd/secret"
+	"github.com/dingdayu/dnsx/pkg/config"
+	"github.com/dingdayu/dnsx/pkg/log"
 
 	"github.com/spf13/cobra"
 )
@@ -24,9 +25,10 @@ func init() {
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
-	RootCmd.PersistentFlags().StringVar(&config.CfgFile, "c", "config/config.yaml", "config file (default is config.yaml)")
+	RootCmd.PersistentFlags().StringVar(&config.CfgFile, "c", "config/dnsx.yaml", "config file (default is config.yaml)")
 
 	RootCmd.AddCommand(api.ServerCmd)
+	RootCmd.AddCommand(secret.Cmd)
 
 }
 

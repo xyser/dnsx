@@ -1,7 +1,7 @@
 package main
 
 import (
-	"dnsx/cmd"
+	"github.com/dingdayu/dnsx/cmd"
 )
 
 func main() {

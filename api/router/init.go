@@ -1,11 +1,11 @@
 package router
 
 import (
-	"dnsx/api/controller/health"
-	v1 "dnsx/api/controller/v1"
-	"dnsx/api/controller/v1/record"
-	"dnsx/api/middleware"
-	"dnsx/pkg/config"
+	"github.com/dingdayu/dnsx/api/controller/health"
+	v1 "github.com/dingdayu/dnsx/api/controller/v1"
+	"github.com/dingdayu/dnsx/api/controller/v1/record"
+	"github.com/dingdayu/dnsx/api/middleware"
+	"github.com/dingdayu/dnsx/pkg/config"
 
 	"github.com/gin-gonic/gin"
 )

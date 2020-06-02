@@ -1,4 +1,4 @@
-module dnsx
+module github.com/dingdayu/dnsx
 
 require (
 	github.com/fsnotify/fsnotify v1.4.9
@@ -21,8 +21,8 @@ require (
 	github.com/spf13/viper v1.5.0
 	go.uber.org/zap v1.15.0
 	golang.org/x/crypto v0.0.0-20200510223506-06a226fb4e37 // indirect
-	golang.org/x/net v0.0.0-20200506145744-7e3656a0809f // indirect
-	golang.org/x/sys v0.0.0-20200509044756-6aff5f38e54f // indirect
+	golang.org/x/net v0.0.0-20200528225125-3c3fba18258b // indirect
+	golang.org/x/sys v0.0.0-20200523222454-059865788121 // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/go-playground/validator.v9 v9.30.0
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0

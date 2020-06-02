@@ -1,9 +1,10 @@
 package service
 
 import (
-	v1 "dnsx/api/controller/v1"
-	"dnsx/model/dao"
 	"github.com/miekg/dns"
+
+	v1 "github.com/dingdayu/dnsx/api/controller/v1"
+	"github.com/dingdayu/dnsx/model/dao"
 )
 
 func GetRecordList(name, qtype, value string) (rrs []dao.Record, err error) {

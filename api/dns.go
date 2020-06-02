@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
-	"dnsx/model/dao"
-	"dnsx/pkg/network"
+	"github.com/dingdayu/dnsx/model/dao"
+	"github.com/dingdayu/dnsx/pkg/network"
 
 	"github.com/miekg/dns"
 )

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	. "dnsx/internal/consts"
+	. "github.com/dingdayu/dnsx/internal/consts"
 )
 
 // LocalDate 本地日期

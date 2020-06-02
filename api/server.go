@@ -9,9 +9,9 @@ import (
 	"os/signal"
 	"time"
 
-	"dnsx/api/router"
-	"dnsx/pkg/config"
-	"dnsx/pkg/validate"
+	"github.com/dingdayu/dnsx/api/router"
+	"github.com/dingdayu/dnsx/pkg/config"
+	"github.com/dingdayu/dnsx/pkg/validate"
 
 	"github.com/gin-gonic/gin/binding"
 	"github.com/miekg/dns"

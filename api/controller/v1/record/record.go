@@ -1,12 +1,14 @@
 package record
 
 import (
-	v1 "dnsx/api/controller/v1"
-	"dnsx/internal/service"
 	"errors"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"gopkg.in/go-playground/validator.v9"
-	"net/http"
+
+	v1 "github.com/dingdayu/dnsx/api/controller/v1"
+	"github.com/dingdayu/dnsx/internal/service"
 )
 
 func Lists(c *gin.Context) {

@@ -5,7 +5,7 @@ import (
 	"os"
 	"sync"
 
-	"dnsx/pkg/config"
+	"github.com/dingdayu/dnsx/pkg/config"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
