@@ -1,3 +1,7 @@
+dns:
+  # 启用权威服务标识
+  authoritative: true
+
 app:
   name: dnsx
   model: debug # debug / test / release

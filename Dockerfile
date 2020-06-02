@@ -12,7 +12,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositorie
 ENV DREAMENV=TEST DEPLOY_TYPE=DOCKER
 WORKDIR /opt/dnsx
 COPY --from=0 /opt/dnsx .
-COPY --from=0 /opt/config/config.yaml /opt/dnsx/config/config.yaml
+COPY --from=0 /opt/config/dnsx.yaml /opt/dnsx/config/dnsx.yaml
 EXPOSE 8080 53 53/udp
 HEALTHCHECK --interval=5s --timeout=3s \
   CMD curl -fs -X HEAD http://127.0.0.1:8080/health || exit 1
