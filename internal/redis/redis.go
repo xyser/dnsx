@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sync"
 
-	"dnsx/pkg/config"
+	"github.com/dingdayu/dnsx/pkg/config"
 
 	"github.com/go-redis/redis"
 )

@@ -6,8 +6,8 @@ import (
 	_ "net/http/pprof"
 	"sync"
 
-	"dnsx/pkg/config"
-	"dnsx/pkg/log"
+	"github.com/dingdayu/dnsx/pkg/config"
+	"github.com/dingdayu/dnsx/pkg/log"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
