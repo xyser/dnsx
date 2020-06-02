@@ -13,10 +13,13 @@ import (
 )
 
 var (
-	sqlRegexp                = regexp.MustCompile(`\?`)
+	// sqlRegexp To ? split
+	sqlRegexp = regexp.MustCompile(`\?`)
+	// numericPlaceHolderRegexp Match number
 	numericPlaceHolderRegexp = regexp.MustCompile(`\$\d+`)
 )
 
+// isPrintable String is it possible to print
 func isPrintable(s string) bool {
 	for _, r := range s {
 		if !unicode.IsPrint(r) {
@@ -26,6 +29,7 @@ func isPrintable(s string) bool {
 	return true
 }
 
+// Print Gorm print
 func (l *Logger) Print(values ...interface{}) {
 	if len(values) > 1 {
 		var (
@@ -40,36 +44,15 @@ func (l *Logger) Print(values ...interface{}) {
 		if level == "sql" {
 			// duration
 			fields = append(fields, zap.String("du", fmt.Sprintf("%.2fms", float64(values[2].(time.Duration).Nanoseconds()/1e4)/100.0)))
-			// sql
+			// formatted
 			for _, value := range values[4].([]interface{}) {
 				indirectValue := reflect.Indirect(reflect.ValueOf(value))
+				valueStr := "NULL"
 				if indirectValue.IsValid() {
-					value = indirectValue.Interface()
-					if t, ok := value.(time.Time); ok {
-						formattedValues = append(formattedValues, fmt.Sprintf("'%v'", t.Format("2006-01-02 15:04:05")))
-					} else if b, ok := value.([]byte); ok {
-						if str := string(b); isPrintable(str) {
-							formattedValues = append(formattedValues, fmt.Sprintf("'%v'", str))
-						} else {
-							formattedValues = append(formattedValues, "'<binary>'")
-						}
-					} else if r, ok := value.(driver.Valuer); ok {
-						if value, err := r.Value(); err == nil && value != nil {
-							formattedValues = append(formattedValues, fmt.Sprintf("'%v'", value))
-						} else {
-							formattedValues = append(formattedValues, "NULL")
-						}
-					} else {
-						switch value.(type) {
-						case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64, float32, float64, bool:
-							formattedValues = append(formattedValues, fmt.Sprintf("%v", value))
-						default:
-							formattedValues = append(formattedValues, fmt.Sprintf("'%v'", value))
-						}
-					}
-				} else {
-					formattedValues = append(formattedValues, "NULL")
+					// value to string
+					valueStr = interfaceToFormatted(indirectValue.Interface())
 				}
+				formattedValues = append(formattedValues, valueStr)
 			}
 
 			// differentiate between $n placeholders or else treat like ?
@@ -94,4 +77,35 @@ func (l *Logger) Print(values ...interface{}) {
 		}
 		l.Info("SQL", fields...)
 	}
+}
+
+// interfaceToFormatted Interface convert string
+func interfaceToFormatted(value interface{}) string {
+	// time
+	if t, ok := value.(time.Time); ok {
+		return fmt.Sprintf("'%v'", t.Format("2006-01-02 15:04:05"))
+	}
+
+	// bytes
+	if b, ok := value.([]byte); ok {
+		if str := string(b); isPrintable(str) {
+			return fmt.Sprintf("'%v'", str)
+		} else {
+			return "'<binary>'"
+		}
+	}
+	if r, ok := value.(driver.Valuer); ok {
+		if value, err := r.Value(); err == nil && value != nil {
+			return fmt.Sprintf("'%v'", value)
+		} else {
+			return "NULL"
+		}
+	}
+
+	// number
+	switch value.(type) {
+	case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64, float32, float64, bool:
+		return fmt.Sprintf("%v", value)
+	}
+	return fmt.Sprintf("'%v'", value)
 }
