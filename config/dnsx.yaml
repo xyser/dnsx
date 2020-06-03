@@ -4,8 +4,11 @@ dns:
 
 app:
   name: dnsx
-  model: debug # debug / test / release
+  mode: release # debug / test / release
   port: 53
+
+api:
+  addr: :8081
 
 mysql:
   dns: dnsx:password@tcp(127.0.0.1:3306)/dnsx?charset=utf8&parseTime=True&loc=Local
@@ -13,9 +16,6 @@ mysql:
   max_open_conn: 100
   max_idle_conn: 5
   log_model: true
-
-api:
-  addr: :8081
 
 log:
   log_path: ./logs/
