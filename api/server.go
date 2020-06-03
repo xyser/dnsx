@@ -62,26 +62,25 @@ func Run() {
 	}()
 
 	// Safe exit via signal
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	quit := make(chan os.Signal)
 	signal.Notify(quit, os.Interrupt)
 	<-quit
 	fmt.Println("\n\033[1;30;42m[info]\033[0m Shutdown Server")
-	defer cancel()
 
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 	// HTTP Shutdown
 	if err := srv.Shutdown(ctx); err != nil {
-		fmt.Printf("\033[1;30;42m[info]\033[0m Api Shutdown: %s\n", err)
+		fmt.Printf("\033[1;30;43m[warn]\033[0m Api Shutdown: %s\n", err)
 	}
 
 	// DNS Shutdown
 	if err := udp.ShutdownContext(ctx); err != nil {
-		fmt.Printf("\033[1;30;42m[info]\033[0m UDP Shutdown: %s\n", err)
+		fmt.Printf("\033[1;30;43m[warn]\033[0m UDP Shutdown: %s\n", err)
 	}
 	if err := tcp.ShutdownContext(ctx); err != nil {
-		fmt.Printf("\033[1;30;42m[info]\033[0m TCP Shutdown: %s\n", err)
+		fmt.Printf("\033[1;30;43m[warn]\033[0m TCP Shutdown: %s\n", err)
 	}
 
-	<-ctx.Done()
 	fmt.Println("Server exited")
 }
