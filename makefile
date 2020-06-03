@@ -7,7 +7,7 @@ fmt:
 	go fmt .
 
 run:
-	go run . server --c config/config.yaml
+	go run . server --c config/dnsx.yaml
 
 build:
 	go build -race -ldflags "-s -w -X 'dnsx/api/controller/v1.BuildTime=`date +"%Y-%m-%d %H:%M:%S"`' -X dnsx/api/controller/v1.BuildVersion=`git rev-parse --short HEAD`" -tags=jsoniter -o dnsx .
