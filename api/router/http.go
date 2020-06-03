@@ -10,10 +10,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var handle *gin.Engine
-
-func Handler() *gin.Engine {
-	handle = gin.New()
+func HTTPHandler() *gin.Engine {
+	handle := gin.New()
 	// 正式环境不再在控制台请求输出日志
 	if gin.Mode() != gin.ReleaseMode {
 		handle.Use(gin.Logger())
