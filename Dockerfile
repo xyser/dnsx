@@ -3,12 +3,12 @@ ENV GO111MODULE=on GOPROXY=https://goproxy.io,direct
 WORKDIR /opt
 COPY ./ /opt
 RUN go mod tidy
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags "-s -w -X 'dnsx/api/controller/v1.BuildTime=`date +"%Y-%m-%d %H:%M:%S"`' -X dnsx/api/controller/v1.BuildVersion=1.0.1" -tags=jsoniter -o dnsx .
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags "-s -w -X 'dnsx/api/controller/v1.BuildTime=`date +"%Y-%m-%d %H:%M:%S"`' -X dnsx/api/controller/v1.BuildVersion=`git rev-parse --short HEAD`" -tags=jsoniter -o dnsx .
 
 FROM alpine:latest
 LABEL maintainer="dingdayu <614422099@qq.com>"
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories \
-    && apk --no-cache add ca-certificates tzdata curl
+    && apk --no-cache add ca-certificates tzdata
 ENV DREAMENV=TEST DEPLOY_TYPE=DOCKER
 WORKDIR /opt/dnsx
 COPY --from=0 /opt/dnsx .
