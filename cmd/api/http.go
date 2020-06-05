@@ -5,7 +5,7 @@ import (
 	"github.com/spf13/viper"
 
 	"github.com/dingdayu/dnsx/api"
-	"github.com/dingdayu/dnsx/model/dao"
+	"github.com/dingdayu/dnsx/internal/mysql"
 )
 
 var authoritative bool
@@ -19,7 +19,7 @@ var ServerCmd = &cobra.Command{
 	},
 	PreRun: func(cmd *cobra.Command, args []string) {
 
-		dao.Init()
+		mysql.Init()
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		api.Run()

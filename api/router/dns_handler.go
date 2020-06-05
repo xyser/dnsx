@@ -8,20 +8,25 @@ import (
 	"github.com/miekg/dns"
 )
 
+// DNSCall dns controller func
 type DNSCall func(r *dns.Msg) error
 
+// Engine dns engine
 type Engine struct {
 	handles sync.Map
 }
 
+// New new dns engine
 func New() (h *Engine) {
 	return &Engine{handles: sync.Map{}}
 }
 
+// Register register dns controller
 func (h *Engine) Register(qtype uint16, handle DNSCall) {
 	h.handles.Store(qtype, handle)
 }
 
+// ServeDNS export func to serve
 func (h *Engine) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 	//w.RemoteAddr()
 	msg := dns.Msg{}
@@ -85,7 +90,7 @@ func (h *Engine) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 	_ = w.WriteMsg(&msg)
 }
 
-// QuestionStream 询问上游服务器
+// QuestionStream query up stream
 func QuestionStream(name string, qtype uint16) (r *dns.Msg, rtt time.Duration, err error) {
 	c := new(dns.Client)
 	m := new(dns.Msg)

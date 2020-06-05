@@ -6,10 +6,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// BuildTime build in time
 var BuildTime string
+
+// BuildVersion build in git last commit id
 var BuildVersion string
 
-// @Summary 获取接口版本
+// Version 获取接口版本
 // @Produce  json
 // @Success 200 {object} api.Response
 // @Failure 500 {object} api.Response

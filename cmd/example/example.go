@@ -4,7 +4,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// ExampleCmd cmd example
+// Cmd cmd example
 var Cmd = &cobra.Command{
 	Use:   "example:test",
 	Short: "示例",

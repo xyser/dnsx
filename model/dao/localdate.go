@@ -4,11 +4,12 @@ import (
 	"database/sql/driver"
 	"fmt"
 	"time"
-
-	. "github.com/dingdayu/dnsx/internal/consts"
 )
 
-// LocalDate 本地日期
+// DateFormat date time
+const DateFormat = "2006-01-02"
+
+// LocalDate local date
 type LocalDate struct {
 	time.Time
 }

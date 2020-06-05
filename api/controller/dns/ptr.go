@@ -7,6 +7,7 @@ import (
 	"github.com/dingdayu/dnsx/pkg/network"
 )
 
+// TypePTR query ptr
 func TypePTR(msg *dns.Msg) error {
 	msg.Authoritative = true
 	ip := network.PTRToIP([]byte(msg.Question[0].Name))

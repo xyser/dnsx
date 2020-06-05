@@ -11,7 +11,7 @@ type ClusterManager struct {
 	DomainsCount *prometheus.Desc
 }
 
-// Simulate prepare the data
+// ReallyExpensiveAssessmentOfTheSystemState Simulate prepare the data
 func (c *ClusterManager) ReallyExpensiveAssessmentOfTheSystemState() (
 	recordsCount int64, domainsCount int64) {
 
@@ -24,6 +24,7 @@ func (c *ClusterManager) Describe(ch chan<- *prometheus.Desc) {
 	ch <- c.DomainsCount
 }
 
+// Collect send metrics
 func (c *ClusterManager) Collect(ch chan<- prometheus.Metric) {
 	domainsCount, recordsCount := c.ReallyExpensiveAssessmentOfTheSystemState()
 	ch <- prometheus.MustNewConstMetric(

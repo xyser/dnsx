@@ -8,6 +8,8 @@ import (
 	"time"
 
 	"github.com/fsnotify/fsnotify"
+
+	// auto load env
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/spf13/viper"
 )
@@ -20,6 +22,7 @@ var once sync.Once
 // CfgFile 配置文件路径,允许在初始化前,由外部包赋值
 var CfgFile string
 
+// Init auto load config
 func Init() {
 	once.Do(func() {
 		// 设置配置文件目录和文件名
@@ -64,7 +67,7 @@ func onConfigChange(e fsnotify.Event) {
 	}
 }
 
-// GetBool returns the value associated with the key as a boolean.
+// Get can retrieve any value given the key to use.
 func Get(k string) interface{} { return viper.Get(k) }
 
 // GetBool returns the value associated with the key as a boolean.
@@ -127,4 +130,4 @@ func AllSettings() map[string]interface{} { return viper.AllSettings() }
 
 // AllKeys returns all keys holding a value, regardless of where they are set.
 // Nested keys are returned with a v.keyDelim (= ".") separator
-func AllKey() []string { return viper.AllKeys() }
+func AllKeys() []string { return viper.AllKeys() }

@@ -1,5 +1,6 @@
 package record
 
+// CreateArgs create record args
 type CreateArgs struct {
 	Name     string `json:"name" validate:"required"`
 	Type     string `json:"type" validate:"required"`

@@ -10,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// HTTPHandler export http gin.engine
 func HTTPHandler() *gin.Engine {
 	handle := gin.New()
 	// 正式环境不再在控制台请求输出日志

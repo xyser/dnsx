@@ -3,6 +3,7 @@ package v1
 import "fmt"
 
 var (
+	// SuccessResponse success response
 	SuccessResponse = Response{Code: 1000, Message: "success"}
 
 	ErrInternalServer = Response{Code: 1001, Message: "系统错误"}
@@ -11,7 +12,7 @@ var (
 	ErrNotExist       = Response{Code: 1004, Message: "数据不存在"}
 )
 
-// HTTP Response
+// Response response struct
 type Response struct {
 	Code    int         `json:"code"`
 	Message string      `json:"message"`

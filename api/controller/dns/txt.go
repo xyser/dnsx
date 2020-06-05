@@ -6,6 +6,7 @@ import (
 	"github.com/dingdayu/dnsx/model/dao"
 )
 
+// TypeTXT query txt
 func TypeTXT(msg *dns.Msg) error {
 	domain := msg.Question[0].Name
 	rrs, err := dao.GetRecordByNameAndType(domain, msg.Question[0].Qtype)

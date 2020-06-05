@@ -3,15 +3,19 @@ package customtime
 import (
 	"time"
 
-	"github.com/dingdayu/dnsx/internal/consts"
-
 	translator "github.com/go-playground/universal-translator"
 	"gopkg.in/go-playground/validator.v9"
 )
 
+// DateTimeFormat MySQL DateTime
+const DateTimeFormat = "2006-01-02 15:04:05"
+
+// DateTimeHMFormat hm time
+const DateTimeHMFormat = "15:04"
+
 // ValidateTime 验证是否是时间
 func ValidateTime(fl validator.FieldLevel) bool {
-	_, err := time.ParseInLocation(consts.DateTimeFormat, fl.Field().String(), time.Local)
+	_, err := time.ParseInLocation(DateTimeFormat, fl.Field().String(), time.Local)
 	if err != nil {
 		return false
 	}
@@ -25,7 +29,7 @@ func ValidateTimeTranslator(ut translator.Translator) (err error) {
 
 // ValidateTimeHM 验证是否是时间 eg. 13:09
 func ValidateTimeHM(fl validator.FieldLevel) bool {
-	_, err := time.ParseInLocation(consts.DateTimeHMFormat, fl.Field().String(), time.Local)
+	_, err := time.ParseInLocation(DateTimeHMFormat, fl.Field().String(), time.Local)
 	if err != nil {
 		return false
 	}

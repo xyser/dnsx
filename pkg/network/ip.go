@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-// 整形转 IP
+// ToIP int to ip
 func ToIP(i int64) net.IP {
 	var bs [4]byte
 	bs[0] = byte(i & 0xFF)
@@ -18,7 +18,7 @@ func ToIP(i int64) net.IP {
 	return net.IPv4(bs[3], bs[2], bs[1], bs[0])
 }
 
-// IP 转整形
+// ToInt ip to int
 func ToInt(ip net.IP) int64 {
 	bits := strings.Split(ip.String(), ".")
 	b0, _ := strconv.Atoi(bits[0])
@@ -35,7 +35,7 @@ func ToInt(ip net.IP) int64 {
 	return sum
 }
 
-// 是否公网IP
+// IsPublicIP is public ip
 func IsPublicIP(IP net.IP) bool {
 	if IP.IsLoopback() || IP.IsLinkLocalMulticast() || IP.IsLinkLocalUnicast() {
 		return false
@@ -55,7 +55,7 @@ func IsPublicIP(IP net.IP) bool {
 	return false
 }
 
-// IP 区间
+// BetweenIP IP between
 func BetweenIP(from net.IP, to net.IP, test net.IP) bool {
 	if from == nil || to == nil || test == nil {
 		fmt.Println("An ip input is nil") // or return an error!?

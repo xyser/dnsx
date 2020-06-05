@@ -7,6 +7,7 @@ import (
 	"github.com/dingdayu/dnsx/model/dao"
 )
 
+// GetRecordList get record list api by service
 func GetRecordList(name, qtype, value string) (rrs []dao.Record, err error) {
 	query := dao.Record{}
 	if len(name) > 0 {
@@ -25,9 +26,10 @@ func GetRecordList(name, qtype, value string) (rrs []dao.Record, err error) {
 	return
 }
 
-// DefaultRecordTTL 记录默认TTL
+// DefaultRecordTTL record default ttl
 const DefaultRecordTTL = 3600
 
+// CreateRecord create record
 func CreateRecord(name, qtype, value string, ttl uint32, priority int) (rr dao.Record, err error) {
 	if ttl == 0 {
 		ttl = DefaultRecordTTL

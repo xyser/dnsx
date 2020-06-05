@@ -15,13 +15,13 @@ import (
 	translations "gopkg.in/go-playground/validator.v9/translations/zh"
 )
 
-var ginValidator *defaultValidator
+var ginValidator *Validator
 var validate *validator.Validate
 var uni *ut.UniversalTranslator
 var trans ut.Translator
-var _ binding.StructValidator = &defaultValidator{}
+var _ binding.StructValidator = &Validator{}
 
-type defaultValidator struct {
+type Validator struct {
 	once     sync.Once
 	validate *validator.Validate
 	trans    *ut.Translator
@@ -41,13 +41,13 @@ func init() {
 		}
 		return name
 	})
-	ginValidator = &defaultValidator{
+	ginValidator = &Validator{
 		validate: validate,
 	}
 }
 
 // GinValidator 初始化验证器
-func GinValidator() *defaultValidator {
+func GinValidator() *Validator {
 	return ginValidator
 }
 
@@ -56,7 +56,7 @@ func Default() *validator.Validate {
 	return validate
 }
 
-func (v *defaultValidator) ValidateStruct(obj interface{}) error {
+func (v *Validator) ValidateStruct(obj interface{}) error {
 	if kindOfData(obj) == reflect.Struct {
 		v.lazyinit()
 		if err := v.validate.Struct(obj); err != nil {
@@ -71,12 +71,12 @@ func (v *defaultValidator) ValidateStruct(obj interface{}) error {
 	return nil
 }
 
-func (v *defaultValidator) Engine() interface{} {
+func (v *Validator) Engine() interface{} {
 	v.lazyinit()
 	return v.validate
 }
 
-func (v *defaultValidator) lazyinit() {
+func (v *Validator) lazyinit() {
 	v.once.Do(func() {
 		v.validate = validate
 		v.trans = &trans

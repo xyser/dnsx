@@ -90,16 +90,14 @@ func interfaceToFormatted(value interface{}) string {
 	if b, ok := value.([]byte); ok {
 		if str := string(b); isPrintable(str) {
 			return fmt.Sprintf("'%v'", str)
-		} else {
-			return "'<binary>'"
 		}
+		return "'<binary>'"
 	}
 	if r, ok := value.(driver.Valuer); ok {
 		if value, err := r.Value(); err == nil && value != nil {
 			return fmt.Sprintf("'%v'", value)
-		} else {
-			return "NULL"
 		}
+		return "NULL"
 	}
 
 	// number

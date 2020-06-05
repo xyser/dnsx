@@ -19,6 +19,7 @@ import (
 	"github.com/miekg/dns"
 )
 
+// Run server command
 func Run() {
 	// 注册 DNS
 	dnsAddr := fmt.Sprintf(":%d", config.GetInt("app.port"))

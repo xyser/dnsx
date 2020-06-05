@@ -8,11 +8,12 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-// 首页，用于健康检查
+// Hello hello word
 func Hello(c *gin.Context) {
 	c.String(http.StatusOK, "hello, word.")
 }
 
+// Ping ping-pong
 func Ping(c *gin.Context) {
 	c.String(http.StatusOK, "pong")
 }

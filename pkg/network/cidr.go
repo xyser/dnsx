@@ -58,23 +58,23 @@ func (c *CIDR) GetCIDRIPRange() (min, max string) {
 	ip := strings.Split(c.IPRange, "/")[0]
 	ipSeg := strings.Split(ip, ".")
 	maskLen := c.GetMaskLen()
-	seg3MinIp, seg3MaxIp := getIPSeg3Range(ipSeg, maskLen)
-	seg4MinIp, seg4MaxIp := getIPSeg4Range(ipSeg, maskLen)
+	seg3MinIP, seg3MaxIP := getIPSeg3Range(ipSeg, maskLen)
+	seg4MinIP, seg4MaxIP := getIPSeg4Range(ipSeg, maskLen)
 	ipPrefix := ipSeg[0] + "." + ipSeg[1] + "."
 
-	min = ipPrefix + strconv.Itoa(seg3MinIp) + "." + strconv.Itoa(seg4MinIp)
-	max = ipPrefix + strconv.Itoa(seg3MaxIp) + "." + strconv.Itoa(seg4MaxIp)
+	min = ipPrefix + strconv.Itoa(seg3MinIP) + "." + strconv.Itoa(seg4MinIP)
+	max = ipPrefix + strconv.Itoa(seg3MaxIP) + "." + strconv.Itoa(seg4MaxIP)
 	return min, max
 }
 
 // GetCIDRHostNum CIDR地址 范围内主机数量
 func (c *CIDR) GetCIDRHostNum() uint {
-	cidrIpNum := uint(0)
+	cidrIPNum := uint(0)
 	var i = uint(32 - c.GetMaskLen() - 1)
 	for ; i >= 1; i-- {
-		cidrIpNum += 1 << i
+		cidrIPNum += 1 << i
 	}
-	return cidrIpNum
+	return cidrIPNum
 }
 
 // GetMaskLen CIDR地址 掩码长度
@@ -82,7 +82,7 @@ func (c *CIDR) GetMaskLen() int {
 	return c.maskLen
 }
 
-// GetCIDRIpMask 获取CIDR掩码
+// GetCIDRIPMask 获取CIDR掩码
 func (c *CIDR) GetCIDRIPMask() string {
 	// ^uint32(0)二进制为32个比特1，通过向左位移，得到CIDR掩码的二进制
 	cidrMask := ^uint32(0) << uint(32-c.GetMaskLen())
@@ -98,8 +98,8 @@ func (c *CIDR) GetCIDRIPMask() string {
 // getIPSeg3Range 得到第三段IP的区间（第一片段.第二片段.第三片段.第四片段）
 func getIPSeg3Range(ipSeg []string, maskLen int) (int, int) {
 	if maskLen > 24 {
-		segIp, _ := strconv.Atoi(ipSeg[2])
-		return segIp, segIp
+		segIP, _ := strconv.Atoi(ipSeg[2])
+		return segIP, segIP
 	}
 	seg, _ := strconv.Atoi(ipSeg[2])
 	return getIPSegRange(uint8(seg), uint8(24-maskLen))
@@ -108,15 +108,15 @@ func getIPSeg3Range(ipSeg []string, maskLen int) (int, int) {
 // getIPSeg4Range 得到第四段IP的区间（第一片段.第二片段.第三片段.第四片段）
 func getIPSeg4Range(ipSeg []string, maskLen int) (int, int) {
 	seg, _ := strconv.Atoi(ipSeg[3])
-	segMinIp, segMaxIP := getIPSegRange(uint8(seg), uint8(32-maskLen))
-	return segMinIp + 1, segMaxIP
+	segMinIP, segMaxIP := getIPSegRange(uint8(seg), uint8(32-maskLen))
+	return segMinIP + 1, segMaxIP
 }
 
 // getIPSegRange 根据用户输入的基础IP地址和CIDR掩码计算一个IP片段的区间
 func getIPSegRange(userSegIP, offset uint8) (int, int) {
 	var ipSegMax uint8 = 255
-	netSegIp := ipSegMax << offset
-	segMinIp := netSegIp & userSegIP
+	netSegIP := ipSegMax << offset
+	segMinIP := netSegIP & userSegIP
 	segMaxIP := userSegIP&(255<<offset) | ^(255 << offset)
-	return int(segMinIp), int(segMaxIP)
+	return int(segMinIP), int(segMaxIP)
 }

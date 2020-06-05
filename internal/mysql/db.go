@@ -1,5 +1,5 @@
-// dao 所有定义的模型操作方法，均在此包里。
-package dao
+// Package dao 所有定义的模型操作方法，均在此包里。
+package mysql
 
 import (
 	"fmt"
@@ -7,7 +7,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/dingdayu/dnsx/internal/asset"
 	"github.com/dingdayu/dnsx/pkg/config"
 	"github.com/dingdayu/dnsx/pkg/log"
 
@@ -17,9 +16,9 @@ import (
 )
 
 var once sync.Once
-
 var db *gorm.DB
 
+// Init db connect
 func Init() {
 	var err error
 	once.Do(func() {
@@ -35,16 +34,10 @@ func Init() {
 		db.DB().SetConnMaxLifetime(time.Minute * time.Duration(config.GetInt("mysql.conn_max_lifetime")))
 		db.DB().SetMaxIdleConns(config.GetInt("mysql.max_idle_conn"))
 		db.DB().SetMaxOpenConns(config.GetInt("mysql.max_open_conn"))
-
-		InitTable()
 	})
 }
 
-// InitTable 检查表是否存在并创建表
-func InitTable() {
-	if !db.HasTable(Record{}) {
-		if sql, err := asset.Asset("scripts/sql/record.sql"); err == nil {
-			db.Exec(string(sql))
-		}
-	}
+// GetDB get db connect
+func GetDB() *gorm.DB {
+	return db
 }

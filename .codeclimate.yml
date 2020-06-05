@@ -41,6 +41,12 @@ plugins:
     enabled: true
   govet:
     enabled: true
+  duplication:
+    enabled: true
+    config:
+      languages:
+        go:
+          count_threshold: 3
 
 # Excluded folders or files
 exclude_patterns:

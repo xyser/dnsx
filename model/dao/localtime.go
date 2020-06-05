@@ -4,11 +4,12 @@ import (
 	"database/sql/driver"
 	"fmt"
 	"time"
-
-	. "github.com/dingdayu/dnsx/internal/consts"
 )
 
-// LocalDate 本地日期
+// DateTimeFormat MySQL DateTime
+const DateTimeFormat = "2006-01-02 15:04:05"
+
+// LocalTime local time
 type LocalTime struct {
 	time.Time
 }

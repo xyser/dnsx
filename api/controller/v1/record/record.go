@@ -11,6 +11,7 @@ import (
 	"github.com/dingdayu/dnsx/internal/service"
 )
 
+// Lists record list api
 func Lists(c *gin.Context) {
 	name := c.Query("name")
 	qtype := c.Query("type")
@@ -24,6 +25,7 @@ func Lists(c *gin.Context) {
 	c.JSON(http.StatusOK, v1.NewSucResponse(rrs))
 }
 
+// Create create record api
 func Create(c *gin.Context) {
 	var args = CreateArgs{}
 	if err := c.Bind(&args); err != nil {

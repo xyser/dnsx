@@ -4,6 +4,7 @@ import (
 	"net"
 )
 
+// DomainSuffixLen ptr domain suffix length
 const DomainSuffixLen = 14
 
 // PTRToIP 提取 PTR 的 IP

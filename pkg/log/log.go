@@ -16,9 +16,10 @@ import (
 
 var once sync.Once
 
+// TraceID trace id
 const TraceID = "trace_id"
 
-// 日志级别
+// levelType log level
 var levelType = map[string]zapcore.Level{
 	"debug": zap.DebugLevel,
 	"info":  zap.InfoLevel,
@@ -33,7 +34,7 @@ type Logger struct {
 
 var logger = new(Logger)
 
-// Logger new Logger
+// New Logger new Logger
 func New() *Logger {
 	return logger
 }
@@ -41,7 +42,7 @@ func New() *Logger {
 // level 日志级别操作
 var level = zap.NewAtomicLevel()
 
-// Setup init Logger
+// Init Setup init Logger
 func Init() {
 	once.Do(func() {
 
@@ -61,7 +62,7 @@ func Init() {
 	})
 }
 
-// WithCTX 从上下文中获取 trace-id 并在日志中加入 trace-id 字段
+// WithContext 从上下文中获取 trace-id 并在日志中加入 trace-id 字段
 func (l Logger) WithContext(c context.Context) Logger {
 	id, ok := c.Value(TraceID).(string)
 	if !ok {

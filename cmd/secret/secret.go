@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// ExampleCmd cmd example
+// Cmd cmd example
 var Cmd = &cobra.Command{
 	Use:   "secret",
 	Short: "示例",

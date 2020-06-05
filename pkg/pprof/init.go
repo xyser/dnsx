@@ -3,6 +3,7 @@ package pprof
 import (
 	"context"
 	"net/http"
+	// http pprof
 	_ "net/http/pprof"
 	"sync"
 
@@ -19,7 +20,8 @@ var ctx context.Context
 var server *http.Server
 var isOpen bool
 
-const LogNamed = "pprof"
+// logNamed log category
+const logNamed = "pprof"
 
 // Init init server
 func Init() {
@@ -28,6 +30,7 @@ func Init() {
 	})
 }
 
+// ReloadConfig reload config
 func ReloadConfig() {
 	// 配置未开启状态(false)
 	if !viper.GetBool("pprof.open") {
@@ -48,7 +51,7 @@ func ReloadConfig() {
 		setStatus(true)
 
 		go server.ListenAndServe()
-		log.New().Named(LogNamed).Info("start pprof", zap.String("url", viper.GetString("pprof.addr")))
+		log.New().Named(logNamed).Info("start pprof", zap.String("url", viper.GetString("pprof.addr")))
 		return
 	}
 }

@@ -12,8 +12,7 @@ import (
 var once sync.Once
 var client *redis.Client
 
-const Nil = redis.Nil
-
+// Init redis connect
 func Init() {
 	once.Do(func() {
 		client = redis.NewClient(&redis.Options{
@@ -32,6 +31,7 @@ func Init() {
 	})
 }
 
+// Redis get redis connect
 func Redis() *redis.Client {
 	return client
 }
