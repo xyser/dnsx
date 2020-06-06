@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"gopkg.in/go-playground/validator.v9"
+	"github.com/go-playground/validator/v10"
 
 	v1 "github.com/dingdayu/dnsx/api/controller/v1"
 	"github.com/dingdayu/dnsx/internal/service"

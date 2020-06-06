@@ -6,13 +6,14 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/go-playground/validator/v10"
+
 	customtime "github.com/dingdayu/dnsx/pkg/validate/custom/time"
 
 	"github.com/gin-gonic/gin/binding"
 	local "github.com/go-playground/locales/zh"
 	ut "github.com/go-playground/universal-translator"
-	"gopkg.in/go-playground/validator.v9"
-	translations "gopkg.in/go-playground/validator.v9/translations/zh"
+	translations "github.com/go-playground/validator/v10/translations/zh"
 )
 
 var ginValidator *Validator
