@@ -20,4 +20,4 @@ The project is affected by the following projects or articles.
 - log: [go.uber.org/zap](go.uber.org/zap)
 - gin: [github.com/gin-gonic/gin](github.com/gin-gonic/gin)
 - protocol: [DNS Protocol Overview](https://www.freesoft.org/CIE/Topics/77.htm)
-- rfc: [DNS, Domain Name System(http://www.networksorcery.com/enp/protocol/dns.htm)
+- rfc: [DNS, Domain Name System](http://www.networksorcery.com/enp/protocol/dns.htm)
