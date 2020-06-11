@@ -1,5 +1,9 @@
 package entity
 
+import (
+	"github.com/miekg/dns"
+)
+
 // RR (Resource Record) http://dns-learning.twnic.net.tw/bind/intro6.html
 type RR struct {
 	Type   int
@@ -7,4 +11,90 @@ type RR struct {
 	Value  string
 	Filter string
 	TTL    int
+}
+
+// StringToType RType string to uint16
+var StringToType = map[string]uint16{
+	"none":       dns.TypeNone,
+	"a":          dns.TypeA,
+	"ns":         dns.TypeNS,
+	"md":         dns.TypeMD,
+	"mf":         dns.TypeMF,
+	"cname":      dns.TypeCNAME,
+	"soa":        dns.TypeSOA,
+	"mb":         dns.TypeMB,
+	"mg":         dns.TypeMG,
+	"mr":         dns.TypeMR,
+	"null":       dns.TypeNULL,
+	"ptr":        dns.TypePTR,
+	"hinfo":      dns.TypeHINFO,
+	"minfo":      dns.TypeMINFO,
+	"mx":         dns.TypeMX,
+	"txt":        dns.TypeTXT,
+	"rp":         dns.TypeRP,
+	"afsdb":      dns.TypeAFSDB,
+	"x25":        dns.TypeX25,
+	"isdn":       dns.TypeISDN,
+	"rt":         dns.TypeRT,
+	"nsapptr":    dns.TypeNSAPPTR,
+	"sig":        dns.TypeSIG,
+	"key":        dns.TypeKEY,
+	"px":         dns.TypePX,
+	"gpos":       dns.TypeGPOS,
+	"aaaa":       dns.TypeAAAA,
+	"loc":        dns.TypeLOC,
+	"nxt":        dns.TypeNXT,
+	"eid":        dns.TypeEID,
+	"nimloc":     dns.TypeNIMLOC,
+	"srv":        dns.TypeSRV,
+	"atma":       dns.TypeATMA,
+	"naptr":      dns.TypeNAPTR,
+	"kx":         dns.TypeKX,
+	"cert":       dns.TypeCERT,
+	"dname":      dns.TypeDNAME,
+	"opt":        dns.TypeOPT,
+	"apl":        dns.TypeAPL,
+	"ds":         dns.TypeDS,
+	"sshfp":      dns.TypeSSHFP,
+	"rrsig":      dns.TypeRRSIG,
+	"nsec":       dns.TypeNSEC,
+	"dnskey":     dns.TypeDNSKEY,
+	"dhcid":      dns.TypeDHCID,
+	"nsec3":      dns.TypeNSEC3,
+	"nsec3param": dns.TypeNSEC3PARAM,
+	"tlsa":       dns.TypeTLSA,
+	"smimea":     dns.TypeSMIMEA,
+	"hip":        dns.TypeHIP,
+	"ninfo":      dns.TypeNINFO,
+	"rkey":       dns.TypeRKEY,
+	"talink":     dns.TypeTALINK,
+	"cds":        dns.TypeCDS,
+	"cdnskey":    dns.TypeCDNSKEY,
+	"openpgpkey": dns.TypeOPENPGPKEY,
+	"csync":      dns.TypeCSYNC,
+	"spf":        dns.TypeSPF,
+	"uinfo":      dns.TypeUINFO,
+	"uid":        dns.TypeUID,
+	"gid":        dns.TypeGID,
+	"unspec":     dns.TypeUNSPEC,
+	"nid":        dns.TypeNID,
+	"l32":        dns.TypeL32,
+	"l64":        dns.TypeL64,
+	"lp":         dns.TypeLP,
+	"eui48":      dns.TypeEUI48,
+	"eui64":      dns.TypeEUI64,
+	"uri":        dns.TypeURI,
+	"caa":        dns.TypeCAA,
+	"avc":        dns.TypeAVC,
+
+	"tkey":     dns.TypeTKEY,
+	"tsig":     dns.TypeTSIG,
+	"ixfr":     dns.TypeIXFR,
+	"axfr":     dns.TypeAXFR,
+	"mailb":    dns.TypeMAILB,
+	"maila":    dns.TypeMAILA,
+	"any":      dns.TypeANY,
+	"ta":       dns.TypeTA,
+	"dlv":      dns.TypeDLV,
+	"reserved": dns.TypeReserved,
 }
