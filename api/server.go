@@ -11,10 +11,6 @@ import (
 	"github.com/dingdayu/dnsx/api/router"
 	"github.com/dingdayu/dnsx/internal/engine"
 	"github.com/dingdayu/dnsx/pkg/config"
-	"github.com/dingdayu/dnsx/pkg/validate"
-
-	"github.com/gin-gonic/gin"
-	"github.com/gin-gonic/gin/binding"
 )
 
 // Run server command
@@ -22,10 +18,6 @@ func Run() {
 	// dns addr
 	dnsAddr := fmt.Sprintf(":%d", config.GetInt("app.port"))
 	apiAddr := config.GetString("api.addr")
-	// load mode
-	if config.GetString("app.mode") == "release" {
-		gin.SetMode(gin.ReleaseMode)
-	}
 
 	// init router
 	router.Init()
@@ -43,7 +35,6 @@ func Run() {
 	)
 
 	// listen serve
-	binding.Validator = validate.GinValidator()
 	if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		fmt.Println("\033[1;30;41m[error]\033[0m Start server error: ", err.Error())
 		os.Exit(1)
