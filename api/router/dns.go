@@ -28,11 +28,11 @@ func initDNSHandler() {
 	dnsHandler.Register(dns.TypeMX, dnsc.TypeMX)
 
 	// TypeSRV Service locator
-	// _sip._udp 3600 IN SRV 10 5 5060 siphost.com.
+	// Sample: _sip._udp 3600 IN SRV 10 5 5060 siphost.com.
 	dnsHandler.Register(dns.TypeSRV, dnsc.TypeSRV)
 
 	// TypeURI SRV to URI
-	// _ftp._tcp.example.com. 3600 IN URI 10 1 "ftp://ftp.example.com/public"
+	// Sample: _ftp._tcp.example.com. 3600 IN URI 10 1 "ftp://ftp.example.com/public"
 	dnsHandler.Register(dns.TypeURI, dnsc.TypeURI)
 
 	dnsHandler.Register(dns.TypeTXT, dnsc.TypeTXT)
@@ -44,7 +44,7 @@ func initDNSHandler() {
 	dnsHandler.Register(dns.TypeTLSA, dnsc.TypeTLSA)
 
 	// TypeHINFO hardware type and operating system (OS) information
-	// testhinfo 90 IN HINFO "INTEL-386" "Windows"
+	// Sample: testhinfo 90 IN HINFO "INTEL-386" "Windows"
 	dnsHandler.Register(dns.TypeHINFO, dnsc.TypeHINFO)
 }
 
