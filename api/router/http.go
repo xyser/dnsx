@@ -1,31 +1,45 @@
 package router
 
 import (
+	"encoding/base64"
+	"net/http"
+	"strings"
+
 	"github.com/dingdayu/dnsx/api/controller/health"
 	v1 "github.com/dingdayu/dnsx/api/controller/v1"
 	"github.com/dingdayu/dnsx/api/controller/v1/record"
 	"github.com/dingdayu/dnsx/api/middleware"
+	"github.com/dingdayu/dnsx/model/entity"
 	"github.com/dingdayu/dnsx/pkg/config"
 
 	"github.com/gin-gonic/gin"
+	"github.com/miekg/dns"
 )
 
-// HTTPHandler export http gin.engine
-func HTTPHandler() *gin.Engine {
-	handle := gin.New()
+// httpHandler http handler
+var httpHandler *gin.Engine
+
+// initHTTPHandler init http handler
+func initHTTPHandler() {
+	httpHandler = gin.New()
+
 	// 正式环境不再在控制台请求输出日志
 	if gin.Mode() != gin.ReleaseMode {
-		handle.Use(gin.Logger())
+		httpHandler.Use(gin.Logger())
 	}
-	handle.Use(gin.Recovery())
+	httpHandler.Use(gin.Recovery())
 
-	handle.GET("/", health.Hello)
-	handle.HEAD("/health", health.Hello)
-	handle.GET("/health", health.Hello)
-	handle.GET("/ping", health.Ping)
-	handle.GET("/metrics", health.Prometheus)
+	httpHandler.GET("/", health.Hello)
 
-	apiv1 := handle.Group("/api/v1")
+	httpHandler.GET("/dns-query", httpDNS)
+	httpHandler.POST("/dns-query", httpDNS)
+
+	httpHandler.HEAD("/health", health.Hello)
+	httpHandler.GET("/health", health.Hello)
+	httpHandler.GET("/ping", health.Ping)
+	httpHandler.GET("/metrics", health.Prometheus)
+
+	apiv1 := httpHandler.Group("/api/v1")
 
 	// 根据配置决定是否启用 api 请求日志
 	if config.GetBool("log.request_log") {
@@ -43,6 +57,59 @@ func HTTPHandler() *gin.Engine {
 	// records
 	apiv1.GET("/records", record.Lists)
 	apiv1.POST("/records", record.Create)
+}
 
-	return handle
+// HTTPHandler export http gin.engine
+func HTTPHandler() *gin.Engine {
+	return httpHandler
+}
+
+// httpDNS http dns handle
+func httpDNS(c *gin.Context) {
+	// 转换参数
+	var err error
+	msg := new(dns.Msg)
+
+	// Parsing the request packet
+	switch true {
+	case c.ContentType() == "application/dns-message":
+		var dnsByte []byte
+		if c.Request.Method == http.MethodPost {
+			_, _ = c.Request.Body.Read(dnsByte)
+		} else {
+			if dnsByte, err = base64.RawURLEncoding.DecodeString(c.Query("dns")); err != nil {
+				c.String(http.StatusBadRequest, "message parsing exception")
+				return
+			}
+		}
+		if err := msg.Unpack(dnsByte); err != nil {
+			c.String(http.StatusBadRequest, "message parsing exception")
+			return
+		}
+	case c.ContentType() == "application/dns-json" || c.Query("ct") == "application/dns-json":
+		if v, ok := entity.StringToType[c.Query("type")]; !ok {
+			c.String(http.StatusBadRequest, "arge `type` exception")
+			return
+		} else {
+			msg.SetQuestion(dns.Fqdn(c.Query("name")), v)
+		}
+	}
+
+	// Handle dns message
+	if err := dnsHandler.Handle(msg); err != nil {
+		msg.Rcode = dns.RcodeServerFailure
+	}
+
+	// Json response
+	if strings.Contains(c.ContentType(), "json") {
+
+	}
+
+	// Binary response
+	var resp []byte
+	if resp, err = msg.Pack(); err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+	_, _ = c.Writer.Write(resp)
 }

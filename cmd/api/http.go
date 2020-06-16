@@ -18,7 +18,6 @@ var ServerCmd = &cobra.Command{
 		return nil
 	},
 	PreRun: func(cmd *cobra.Command, args []string) {
-
 		mysql.Init()
 	},
 	Run: func(cmd *cobra.Command, args []string) {
