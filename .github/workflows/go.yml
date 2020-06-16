@@ -26,9 +26,10 @@ jobs:
       run: |
         go get -v -t -d ./...
         go vet ./...
+        go mod tidy
 
     - name: Build
-      run: go build -v .
+      run: make build
 
     - name: Test
-      run: go test -v .
+      run: make test
