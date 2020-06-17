@@ -6,6 +6,7 @@ app:
   name: dnsx
   mode: release # debug / test / release
   port: 53
+  upstream: 8.8.8.8:50
 
 api:
   addr: :8081
