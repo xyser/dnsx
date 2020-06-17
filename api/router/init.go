@@ -6,6 +6,7 @@ import (
 
 var once sync.Once
 
+// Init init router
 func Init() {
 	once.Do(func() {
 		initDNSHandler()

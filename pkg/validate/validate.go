@@ -22,6 +22,7 @@ var uni *ut.UniversalTranslator
 var trans ut.Translator
 var _ binding.StructValidator = &Validator{}
 
+// Validator validator struce
 type Validator struct {
 	once     sync.Once
 	validate *validator.Validate
@@ -57,6 +58,7 @@ func Default() *validator.Validate {
 	return validate
 }
 
+// ValidateStruct validate struct verification
 func (v *Validator) ValidateStruct(obj interface{}) error {
 	if kindOfData(obj) == reflect.Struct {
 		v.lazyinit()
@@ -72,11 +74,13 @@ func (v *Validator) ValidateStruct(obj interface{}) error {
 	return nil
 }
 
+// Engine validator engine
 func (v *Validator) Engine() interface{} {
 	v.lazyinit()
 	return v.validate
 }
 
+// lazyinit lazy init
 func (v *Validator) lazyinit() {
 	v.once.Do(func() {
 		v.validate = validate
@@ -85,6 +89,7 @@ func (v *Validator) lazyinit() {
 	})
 }
 
+// kindOfData
 func kindOfData(data interface{}) reflect.Kind {
 	value := reflect.ValueOf(data)
 	valueType := value.Kind()

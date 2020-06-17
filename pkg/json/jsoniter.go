@@ -7,7 +7,8 @@ import (
 var (
 	json = jsoniter.ConfigCompatibleWithStandardLibrary
 	// Marshal is exported by gin/json package.
-	Marshal         = json.Marshal
+	Marshal = json.Marshal
+	// MarshalToString marshal struct to string
 	MarshalToString = jsoniter.MarshalToString
 
 	// Unmarshal is exported by gin/json package.

@@ -6,6 +6,7 @@ import (
 	"github.com/miekg/dns"
 )
 
+// AnswerCache answer cache
 type AnswerCache struct {
 	Question dns.Question `json:"question"`
 	Answer   []string     `json:"answer"`

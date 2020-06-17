@@ -6,6 +6,7 @@ var (
 	// SuccessResponse success response
 	SuccessResponse = Response{Code: 1000, Message: "success"}
 
+	// ErrInternalServer server internal
 	ErrInternalServer = Response{Code: 1001, Message: "系统错误"}
 	ErrMissParams     = Response{Code: 1002, Message: "缺少参数"}
 	ErrFailParams     = Response{Code: 1003, Message: "参数格式错误"}

@@ -1,4 +1,4 @@
-// Package dao 所有定义的模型操作方法，均在此包里。
+// Package mysql mysql connect
 package mysql
 
 import (
