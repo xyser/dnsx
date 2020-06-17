@@ -58,8 +58,8 @@ func NewServer(opts ...OptionsFunc) *Server {
 func (s Server) ListenAndServe() (err error) {
 	err = s.listenTCP53()
 	err = s.listenUDP53()
-	err = s.listenHttpAPI()
-	err = s.listenHttpDNS()
+	err = s.listenHTTPAPI()
+	err = s.listenHTTPDNS()
 	return err
 }
 

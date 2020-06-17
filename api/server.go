@@ -31,7 +31,7 @@ func Run() {
 		engine.WithHttpAPIHandle(hh),
 
 		engine.WithDNSAddr(dnsAddr),
-		engine.WithHttpAPIAddr(apiAddr),
+		engine.WithHTTPAPIAddr(apiAddr),
 	)
 
 	// listen serve
