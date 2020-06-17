@@ -165,7 +165,7 @@ Handle:
 }
 
 // defaultUpStream default upstream dns addr
-const defaultUpStreamAddr = "8.8.8.9:53"
+const defaultUpStreamAddr = "8.8.8.8:53"
 
 // QuestionStream query up stream
 func QuestionStream(name string, qtype uint16) (r *dns.Msg, rtt time.Duration, err error) {
