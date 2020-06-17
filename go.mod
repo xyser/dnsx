@@ -13,7 +13,7 @@ require (
 	github.com/golang/protobuf v1.4.2 // indirect
 	github.com/jinzhu/gorm v1.9.13
 	github.com/joho/godotenv v1.3.0
-	github.com/json-iterator/go v1.1.9
+	github.com/json-iterator/go v1.1.10
 	github.com/miekg/dns v1.1.29
 	github.com/mitchellh/mapstructure v1.3.1 // indirect
 	github.com/onsi/ginkgo v1.7.0 // indirect
