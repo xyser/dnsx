@@ -1,6 +1,8 @@
 package example
 
 import (
+	"fmt"
+
 	"github.com/spf13/cobra"
 )
 
@@ -12,6 +14,6 @@ var Cmd = &cobra.Command{
 		return nil
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-
+		fmt.Println("example:test")
 	},
 }
