@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Option server option
 type Option struct {
 	tcpAddr string
 	udpAddr string
@@ -16,6 +17,7 @@ type Option struct {
 	httpDNSHandle *gin.Engine
 }
 
+// OptionsFunc option func
 type OptionsFunc func(c *Option)
 
 // WithDNSAddr option set tcp and udp Addr
@@ -40,15 +42,15 @@ func WithUDPAddr(udpAddr string) OptionsFunc {
 	}
 }
 
-// WithHttpDNSAddr option set httpDNSAddr
-func WithHttpDNSAddr(httpDNSAddr string) OptionsFunc {
+// WithHTTPDNSAddr option set httpDNSAddr
+func WithHTTPDNSAddr(httpDNSAddr string) OptionsFunc {
 	return func(c *Option) {
 		c.httpDNSAddr = httpDNSAddr
 	}
 }
 
-// WithHttpAPIAddr option set httpAPIAddr
-func WithHttpAPIAddr(httpAPIAddr string) OptionsFunc {
+// WithHTTPAPIAddr option set httpAPIAddr
+func WithHTTPAPIAddr(httpAPIAddr string) OptionsFunc {
 	return func(c *Option) {
 		c.httpAPIAddr = httpAPIAddr
 	}

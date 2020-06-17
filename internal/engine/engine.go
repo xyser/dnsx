@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"math"
-	"net"
 	"sync"
 	"time"
 
 	"github.com/dingdayu/dnsx/model/entity"
+	"github.com/dingdayu/dnsx/pkg/config"
 
 	"github.com/allegro/bigcache"
 	"github.com/miekg/dns"
@@ -23,7 +23,7 @@ type Engine struct {
 	cache   *bigcache.BigCache
 }
 
-// New new dns engine
+// NewEngine New new dns engine
 func NewEngine() (h *Engine) {
 	cache, _ := bigcache.NewBigCache(bigcache.DefaultConfig(10 * time.Minute))
 	return &Engine{handles: sync.Map{}, cache: cache}
@@ -57,6 +57,7 @@ func (h *Engine) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 	return
 }
 
+// Handle engine handle
 func (h *Engine) Handle(msg *dns.Msg) (err error) {
 	// read cache
 	ck := fmt.Sprintf("%s:%d:%d", msg.Question[0].Name, msg.Question[0].Qtype, msg.Question[0].Qclass)
@@ -163,6 +164,9 @@ Handle:
 	return nil
 }
 
+// defaultUpStream default upstream dns addr
+const defaultUpStreamAddr = "8.8.8.9:53"
+
 // QuestionStream query up stream
 func QuestionStream(name string, qtype uint16) (r *dns.Msg, rtt time.Duration, err error) {
 	c := new(dns.Client)
@@ -172,5 +176,10 @@ func QuestionStream(name string, qtype uint16) (r *dns.Msg, rtt time.Duration, e
 	m.AuthenticatedData = true
 	// 设置递归查询
 	m.SetQuestion(dns.Fqdn(name), qtype)
-	return c.Exchange(m, net.JoinHostPort("8.8.8.8", "53"))
+
+	upStream := config.GetString("app.upstream")
+	if len(upStream) == 0 {
+		upStream = defaultUpStreamAddr
+	}
+	return c.Exchange(m, upStream)
 }

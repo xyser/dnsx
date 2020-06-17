@@ -21,6 +21,7 @@ type Server struct {
 	logger *log.Logger
 }
 
+// NewServer new listen server
 func NewServer(opts ...OptionsFunc) *Server {
 	// load option
 	option := &Option{}
@@ -90,8 +91,8 @@ func (s Server) listenUDP53() (err error) {
 	return err
 }
 
-// listenHttpDNS listen http dns
-func (s Server) listenHttpDNS() (err error) {
+// listenHTTPDNS listen http dns
+func (s Server) listenHTTPDNS() (err error) {
 	if s.httpDNS != nil {
 		go func() {
 			if err = s.httpDNS.ListenAndServe(); err != nil && err != http.ErrServerClosed {
@@ -103,8 +104,8 @@ func (s Server) listenHttpDNS() (err error) {
 	return err
 }
 
-// listenHttpAPI listen http api
-func (s Server) listenHttpAPI() (err error) {
+// listenHTTPAPI listen http api
+func (s Server) listenHTTPAPI() (err error) {
 	if s.httpAPI != nil {
 		go func() {
 			if err = s.httpAPI.ListenAndServe(); err != nil && err != http.ErrServerClosed {
