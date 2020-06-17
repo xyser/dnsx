@@ -6,7 +6,7 @@ app:
   name: dnsx
   mode: release # debug / test / release
   port: 53
-  upstream: 8.8.8.8:50
+  upstream: 8.8.8.8:50 # empty or does not exist not upstream query
 
 api:
   addr: :8081

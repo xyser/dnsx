@@ -2,6 +2,7 @@ package engine
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"math"
 	"sync"
@@ -164,22 +165,25 @@ Handle:
 	return nil
 }
 
-// defaultUpStream default upstream dns addr
-const defaultUpStreamAddr = "8.8.8.8:53"
+var ErrNotConfigUpstream = errors.New("not configuration upstream")
 
-// QuestionStream query up stream
+// QuestionStream query upstream
 func QuestionStream(name string, qtype uint16) (r *dns.Msg, rtt time.Duration, err error) {
-	c := new(dns.Client)
-	m := new(dns.Msg)
-	// 启用 EDNS
-	m.SetEdns0(4096, true)
-	m.AuthenticatedData = true
-	// 设置递归查询
-	m.SetQuestion(dns.Fqdn(name), qtype)
-
+	// load upstream config
 	upStream := config.GetString("app.upstream")
 	if len(upStream) == 0 {
-		upStream = defaultUpStreamAddr
+		return nil, 0, ErrNotConfigUpstream
 	}
+
+	// request upstream
+	c := new(dns.Client)
+	m := new(dns.Msg)
+	// enable EDNS
+	m.SetEdns0(4096, true)
+
+	m.AuthenticatedData = true  // enable auth
+	m.RecursionAvailable = true // enable recursive
+
+	m.SetQuestion(dns.Fqdn(name), qtype)
 	return c.Exchange(m, upStream)
 }
