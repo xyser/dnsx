@@ -5,7 +5,7 @@ import (
 
 	"github.com/miekg/dns"
 
-	"github.com/dingdayu/dnsx/internal/asset"
+	"github.com/dingdayu/dnsx/internal/asset/scripts"
 	"github.com/dingdayu/dnsx/internal/mysql"
 )
 
@@ -50,7 +50,7 @@ func (Record) TableName() string {
 func InitRecord() {
 	db := mysql.GetDB()
 	if !db.HasTable(Record{}) {
-		if sql, err := asset.Asset("scripts/sql/record.sql"); err == nil {
+		if sql, err := scripts.Asset("scripts/sql/record.sql"); err == nil {
 			db.Exec(string(sql))
 		}
 	}

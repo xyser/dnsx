@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"math"
 	"sync"
 	"time"
 
@@ -71,27 +70,7 @@ func (h *Engine) Handle(msg *dns.Msg) (err error) {
 				goto Handle
 			}
 			if len(temp.Answer) > 0 {
-				ttl := temp.Expire.Sub(time.Now()).Seconds()
-				for _, v := range temp.Answer {
-					if rr, err := dns.NewRR(v); err == nil {
-						rr.Header().Ttl = uint32(math.Round(ttl))
-						msg.Answer = append(msg.Answer, rr)
-					}
-				}
-				for _, v := range temp.Extra {
-					if rr, err := dns.NewRR(v); err == nil && rr != nil {
-						rr.Header().Ttl = uint32(math.Round(ttl))
-						msg.Extra = append(msg.Extra, rr)
-					}
-				}
-				for _, v := range temp.Extra {
-					if rr, err := dns.NewRR(v); err == nil && rr != nil {
-						rr.Header().Ttl = uint32(math.Round(ttl))
-						msg.Extra = append(msg.Extra, rr)
-					}
-				}
-				msg.RecursionAvailable = temp.RecursionAvailable
-				msg.Authoritative = temp.Authoritative
+				temp.ToMsg(msg)
 				return err
 			}
 		}

@@ -39,7 +39,7 @@ func Run() {
 		fmt.Println("\033[1;30;41m[error]\033[0m Start server error: ", err.Error())
 		os.Exit(1)
 	} else {
-		fmt.Println("\033[1;30;42m[info]\033[0m Start server listening")
+		fmt.Println("\033[1;30;42m[info]\033[0m Start server listening " + apiAddr)
 	}
 
 	// Safe exit via signal
