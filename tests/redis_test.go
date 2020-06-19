@@ -13,11 +13,18 @@ import (
 
 var rdb *redis.Client
 
-func TestMain(m *testing.M) {
+const (
+	// redis add and password
+	redisAddr = "0.0.0.0:6379"
+	redisPass = ""
+)
+
+// InitRedis init test redis
+func InitRedis() {
 	rdb = redis.NewClient(&redis.Options{
-		Addr:     "0.0.0.0:6379",
-		Password: "00000000", // no password set
-		DB:       3,          // use default DB
+		Addr:     redisAddr,
+		Password: redisPass, // no password set
+		DB:       3,         // use default DB
 		PoolSize: 100,
 	})
 
@@ -27,12 +34,11 @@ func TestMain(m *testing.M) {
 	} else {
 		fmt.Println(pong, err)
 	}
-
-	m.Run()
-	fmt.Println("end")
 }
 
 func TestAnts(t *testing.T) {
+	InitRedis()
+
 	// Use the common pool.
 	var wg sync.WaitGroup
 
