@@ -40,7 +40,9 @@ sonar: outcov
 	  -Dsonar.go.tests.reportPaths=report.json  -Dsonar.go.coverage.reportPaths=coverage.out
 
 asset:
-	go-bindata -pkg asset -o internal/asset/bindata.go asset scripts/sql/record.sql
+	go get -u github.com/go-bindata/go-bindata/...
+	cd asset && go-bindata -fs -pkg static -o ../internal/asset/static/bindata.go ui/... && cd ..
+	go-bindata -pkg scripts -o internal/asset/scripts/bindata.go scripts/sql/record.sql
 
 help:
 	@echo "make: compile packages and dependencies"

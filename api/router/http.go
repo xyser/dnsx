@@ -9,6 +9,7 @@ import (
 	v1 "github.com/dingdayu/dnsx/api/controller/v1"
 	"github.com/dingdayu/dnsx/api/controller/v1/record"
 	"github.com/dingdayu/dnsx/api/middleware"
+	"github.com/dingdayu/dnsx/internal/asset/static"
 	"github.com/dingdayu/dnsx/model/entity"
 	"github.com/dingdayu/dnsx/pkg/config"
 
@@ -38,6 +39,14 @@ func initHTTPHandler() {
 	httpHandler.GET("/health", health.Hello)
 	httpHandler.GET("/ping", health.Ping)
 	httpHandler.GET("/metrics", health.Prometheus)
+
+	// 查询订单的 UI 页面，临时
+	httpHandler.GET("/ui", func(c *gin.Context) {
+		data, _ := static.Asset("ui/index.html")
+		_, _ = c.Writer.Write(data)
+	})
+
+	httpHandler.StaticFS("/asset", static.AssetFile())
 
 	apiv1 := httpHandler.Group("/api/v1")
 
@@ -86,7 +95,10 @@ func httpDNS(c *gin.Context) {
 			c.String(http.StatusBadRequest, "message parsing exception")
 			return
 		}
-	case c.ContentType() == "application/dns-json" || c.Query("ct") == "application/dns-json":
+	case c.ContentType() == "application/dns-json",
+		c.Query("ct") == "application/dns-json",
+		c.ContentType() == "ct=application/x-javascript",
+		c.Query("ct") == "ct=application/x-javascript":
 		if v, ok := entity.StringToType[c.Query("type")]; !ok {
 			c.String(http.StatusBadRequest, "arge `type` exception")
 			return
@@ -101,8 +113,10 @@ func httpDNS(c *gin.Context) {
 	}
 
 	// Json response
-	if strings.Contains(c.ContentType(), "json") {
-
+	if strings.Contains(c.ContentType(), "json") || strings.Contains(c.Query("ct"), "json") ||
+		strings.Contains(c.ContentType(), "x-javascript") || strings.Contains(c.Query("ct"), "x-javascript") {
+		c.JSON(http.StatusOK, entity.MsgToJson(msg))
+		return
 	}
 
 	// Binary response
