@@ -52,7 +52,7 @@ func MockRedis() {
 	}
 }
 
-func Benchmark_RedisSet(b *testing.B) {
+func BenchmarkRedisSet(b *testing.B) {
 	//InitRedis()
 	MockRedis()
 
