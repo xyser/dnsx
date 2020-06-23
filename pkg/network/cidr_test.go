@@ -5,8 +5,10 @@ import (
 	"testing"
 )
 
+const testCIDR = "127.0.0.0/8"
+
 func TestCidr_GetCidrIpRange(t *testing.T) {
-	CIDR, err := NewCIDR("10.6.2.2/20")
+	CIDR, err := NewCIDR(testCIDR)
 	if err != nil {
 		t.Error(err)
 	}
@@ -22,7 +24,7 @@ func TestCidr_GetCidrIpRange(t *testing.T) {
 }
 
 func TestCidr_GetCidrHostNum(t *testing.T) {
-	CIDR, err := NewCIDR("10.6.2.2/20")
+	CIDR, err := NewCIDR(testCIDR)
 	if err != nil {
 		t.Error(err)
 	}
@@ -34,7 +36,7 @@ func TestCidr_GetCidrHostNum(t *testing.T) {
 }
 
 func TestCidr_GetCidrIpMask(t *testing.T) {
-	CIDR, err := NewCIDR("10.6.2.2/20")
+	CIDR, err := NewCIDR(testCIDR)
 	if err != nil {
 		t.Error(err)
 	}
@@ -50,7 +52,7 @@ func TestNewCidr1(t *testing.T) {
 		ipRange string
 	}
 
-	want, _ := NewCIDR("10.6.2.2/20")
+	want, _ := NewCIDR(testCIDR)
 	tests := []struct {
 		name    string
 		args    args
@@ -58,8 +60,8 @@ func TestNewCidr1(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name:    "10.6.2.2/20",
-			args:    args{ipRange: "10.6.2.2/20"},
+			name:    testCIDR,
+			args:    args{ipRange: testCIDR},
 			want:    want,
 			wantErr: false,
 		},

@@ -13,7 +13,7 @@ func TestPTRToIP(t *testing.T) {
 		args args
 		want string
 	}{
-		{name: "4.3.2.1.in-addr.arpa.", args: args{name: []byte("4.3.2.1.in-addr.arpa.")}, want: "1.2.3.4"},
+		{name: "1.0.0.127.in-addr.arpa.", args: args{name: []byte("1.0.0.127.in-addr.arpa.")}, want: "127.0.0.1"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

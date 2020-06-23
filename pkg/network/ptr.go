@@ -12,17 +12,37 @@ const DomainSuffixLen = 14
 func PTRToIP(domain []byte) string {
 	// 移除后面 14个 字符
 	ip := domain[0 : len(domain)-DomainSuffixLen]
-	reverse(ip)
+	reverseWords(ip)
 	return net.ParseIP(string(ip)).String()
 }
 
-// reverse 翻转字符串
-func reverse(s []byte) {
+// reverseWords reverse words
+func reverseWords(s []byte) {
+	l := len(s)
+	reverse(s, 0, l-1)
+	reverseWord(s, l)
+}
+
+// reverseWord reverse word
+func reverseWord(s []byte, n int) {
+	i, j := 0, 0
+
+	for i < n {
+		for i < j || (i < n && s[i] == '.') {
+			i++
+		}
+		for j < i || (j < n && s[j] != '.') {
+			j++
+		}
+		reverse(s, i, j-1)
+	}
+}
+
+// reverse reverse bytes
+func reverse(s []byte, i, j int) {
 	if len(s) == 0 {
 		return
 	}
-	i := 0
-	j := len(s) - 1
 	var t byte
 	for i < j {
 		t = s[i]
