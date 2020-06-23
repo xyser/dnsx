@@ -27,7 +27,7 @@ jobs:
           curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./test-reporter
           chmod +x ./test-reporter
           ./test-reporter before-build
-          go test -coverprofile c.out `go list ./... | grep -v /vendor/` -count=1 -coverpkg=./...
+          go test -coverprofile c.out `go list ./... | grep -v /vendor/` -count=1 -coverpkg=`go list ./... | grep -v /vendor/`
           sed -i "s/github.com\/dingdayu\/dnsx\///g" c.out
           ./test-reporter format-coverage -t gocov
           ./test-reporter upload-coverage

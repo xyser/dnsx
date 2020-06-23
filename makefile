@@ -23,7 +23,7 @@ clean:
 	go mod tidy
 
 test:
-	go test $(go list ./... | grep -v /vendor/) -race -v -count=1 -coverpkg=./...
+	go test -coverprofile c.out `go list ./... | grep -v /vendor/` -count=1 -coverpkg=`go list ./... | grep -v /vendor/`
 
 outcov:
 	go test -race -v -count=1 -coverpkg=./... -test.short -coverprofile=coverage.out -timeout=10s `go list ./... | grep -v /vendor/` -json > report.json
