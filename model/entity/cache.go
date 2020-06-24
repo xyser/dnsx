@@ -21,7 +21,7 @@ type AnswerCache struct {
 }
 
 // ToMsg cache to Msg
-func (a AnswerCache) ToMsg(msg *dns.Msg) {
+func (a *AnswerCache) ToMsg(msg *dns.Msg) {
 	var ttl float64
 	if !a.Expire.IsZero() {
 		ttl = a.Expire.Sub(time.Now()).Seconds()
@@ -47,5 +47,24 @@ func (a AnswerCache) ToMsg(msg *dns.Msg) {
 	}
 	msg.RecursionAvailable = a.RecursionAvailable
 	msg.Authoritative = a.Authoritative
+	return
+}
+
+// ToCache cache to Msg
+func (a *AnswerCache) ToCache(msg *dns.Msg) {
+	a.Question = msg.Question[0]
+	a.Authoritative = msg.Authoritative
+	a.RecursionAvailable = msg.RecursionAvailable
+	a.Expire = time.Now().Add(time.Duration(msg.Answer[0].Header().Ttl) * time.Second)
+
+	for _, v := range msg.Answer {
+		a.Answer = append(a.Answer, v.String())
+	}
+	for _, v := range msg.Extra {
+		a.Extra = append(a.Extra, v.String())
+	}
+	for _, v := range msg.Ns {
+		a.Ns = append(a.Ns, v.String())
+	}
 	return
 }

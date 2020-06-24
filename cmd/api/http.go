@@ -2,7 +2,7 @@ package api
 
 import (
 	"github.com/dingdayu/dnsx/api"
-	"github.com/dingdayu/dnsx/internal/mysql"
+	"github.com/dingdayu/dnsx/model/mysql"
 	"github.com/dingdayu/dnsx/pkg/config"
 	"github.com/dingdayu/dnsx/pkg/validate"
 

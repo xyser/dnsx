@@ -1,4 +1,4 @@
-// Package mysql mysql connect
+// Package mysql connect
 package mysql
 
 import (
