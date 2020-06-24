@@ -6,7 +6,7 @@ import (
 	"github.com/miekg/dns"
 
 	"github.com/dingdayu/dnsx/internal/asset/scripts"
-	"github.com/dingdayu/dnsx/internal/mysql"
+	"github.com/dingdayu/dnsx/model/mysql"
 )
 
 // Record struct
@@ -74,11 +74,14 @@ func GetRecord(where interface{}) (rrs []Record, err error) {
 }
 
 // GetRecordByNameAndType query db by name and type
-func GetRecordByNameAndType(name string, qtype uint16) (rrs []Record, err error) {
-	if types, ok := TypeEnum[qtype]; !ok {
+func GetRecordByNameAndType(name string, qType uint16) (rrs []Record, err error) {
+	var qTypeString string
+	var ok bool
+
+	if qTypeString, ok = TypeEnum[qType]; !ok {
 		return rrs, ErrTypeEnumKey
-	} else {
-		err = mysql.GetDB().Where("name = ? AND type = ?", name, types).Find(&rrs).Error
 	}
+
+	err = mysql.GetDB().Where("name = ? AND type = ?", name, qTypeString).Find(&rrs).Error
 	return
 }
