@@ -97,14 +97,15 @@ func httpDNS(c *gin.Context) {
 		}
 	case c.ContentType() == "application/dns-json",
 		c.Query("ct") == "application/dns-json",
-		c.ContentType() == "ct=application/x-javascript",
-		c.Query("ct") == "ct=application/x-javascript":
-		if v, ok := entity.StringToType[c.Query("type")]; !ok {
+		c.ContentType() == "application/x-javascript",
+		c.Query("ct") == "application/x-javascript":
+		var qType uint16
+		var ok bool
+		if qType, ok = entity.StringToType[c.Query("type")]; !ok {
 			c.String(http.StatusBadRequest, "arge `type` exception")
 			return
-		} else {
-			msg.SetQuestion(dns.Fqdn(c.Query("name")), v)
 		}
+		msg.SetQuestion(dns.Fqdn(c.Query("name")), qType)
 	}
 
 	// Handle dns message

@@ -29,11 +29,10 @@ func InitRedis() {
 		PoolSize: 100,
 	})
 
-	if pong, err := rdb.Ping().Result(); err != nil {
-		fmt.Println("redis connect error:", err)
-		return
-	} else {
+	if pong, err := rdb.Ping().Result(); err == nil {
 		fmt.Println(pong, err)
+	} else {
+		fmt.Println("redis connect error:", err)
 	}
 }
 
@@ -46,7 +45,6 @@ func MockRedis() {
 
 	if pong, err := rdb.Ping().Result(); err != nil {
 		fmt.Println("redis connect error:", err)
-		return
 	} else {
 		fmt.Println(pong, err)
 	}

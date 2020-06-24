@@ -57,26 +57,52 @@ func (h *Engine) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 	return
 }
 
-// Handle engine handle
-func (h *Engine) Handle(msg *dns.Msg) (err error) {
-	// read cache
-	ck := fmt.Sprintf("%s:%d:%d", msg.Question[0].Name, msg.Question[0].Qtype, msg.Question[0].Qclass)
-	if b, err := h.cache.Get(ck); err == nil {
-		temp := entity.AnswerCache{}
-		if err = json.Unmarshal(b, &temp); err == nil {
+// cacheKey sum cache key
+func (h *Engine) cacheKey(msg *dns.Msg) string {
+	return fmt.Sprintf("%s:%d:%d", msg.Question[0].Name, msg.Question[0].Qtype, msg.Question[0].Qclass)
+}
+
+// StoreCache store record cache
+func (h *Engine) StoreCache(msg *dns.Msg) (err error) {
+	if len(msg.Answer) == 0 {
+		return nil
+	}
+	var cah entity.AnswerCache
+	cah.ToCache(msg)
+
+	if mar, err := json.Marshal(cah); err == nil {
+		return h.cache.Set(h.cacheKey(msg), mar)
+	}
+	return nil
+}
+
+// LoadCache load record cache
+func (h *Engine) LoadCache(msg *dns.Msg) (hasCache bool, err error) {
+	if b, err := h.cache.Get(h.cacheKey(msg)); err == nil {
+		var cache entity.AnswerCache
+		if err = json.Unmarshal(b, &cache); err == nil {
 			// expire
-			if temp.Expire.Before(time.Now()) {
-				_ = h.cache.Delete(ck)
-				goto Handle
+			if cache.Expire.Before(time.Now()) {
+				_ = h.cache.Delete(h.cacheKey(msg))
+				return false, errors.New("nil")
 			}
-			if len(temp.Answer) > 0 {
-				temp.ToMsg(msg)
-				return err
+			if len(cache.Answer) > 0 {
+				cache.ToMsg(msg)
+				return true, nil
 			}
 		}
 	}
+	return false, errors.New("nil")
+}
 
-Handle:
+// Handle engine handle
+func (h *Engine) Handle(msg *dns.Msg) (err error) {
+	// load cache
+	if has, _ := h.LoadCache(msg); has {
+		return
+	}
+
+	// handle
 	if call, ok := h.handles.Load(msg.Question[0].Qtype); ok {
 		if callFunc, ok := call.(DNSCall); ok {
 			if err := callFunc(msg); err != nil {
@@ -84,11 +110,6 @@ Handle:
 				return err
 			}
 		}
-	}
-
-	// 签名
-	if len(msg.Answer) > 0 {
-		return
 	}
 
 	// DNSSEC https://support.cloudflare.com/hc/zh-cn/articles/360006660072
@@ -109,12 +130,8 @@ Handle:
 
 		if qr.Rcode == dns.RcodeSuccess {
 			msg.Answer = qr.Answer
-			if len(qr.Ns) > 0 {
-				msg.Ns = qr.Ns
-			}
-			if len(qr.Extra) > 0 {
-				msg.Extra = qr.Extra
-			}
+			msg.Ns = qr.Ns
+			msg.Extra = qr.Extra
 		}
 		// 本次查询非权威应答
 		msg.Authoritative = false
@@ -122,28 +139,11 @@ Handle:
 	}
 
 	// store cache
-	if len(msg.Answer) > 0 {
-		cah := entity.AnswerCache{
-			Question:           msg.Question[0],
-			Authoritative:      msg.Authoritative,
-			RecursionAvailable: msg.RecursionAvailable,
-			Expire:             time.Now().Add(time.Duration(msg.Answer[0].Header().Ttl) * time.Second),
-		}
-		for _, v := range msg.Answer {
-			cah.Answer = append(cah.Answer, v.String())
-		}
-		for _, v := range msg.Extra {
-			cah.Extra = append(cah.Extra, v.String())
-		}
-		for _, v := range msg.Ns {
-			cah.Ns = append(cah.Ns, v.String())
-		}
-		mar, _ := json.Marshal(cah)
-		_ = h.cache.Set(fmt.Sprintf("%s:%d:%d", msg.Question[0].Name, msg.Question[0].Qtype, msg.Question[0].Qclass), mar)
-	}
+	_ = h.StoreCache(msg)
 	return nil
 }
 
+// ErrNotConfigUpstream not config upstream
 var ErrNotConfigUpstream = errors.New("not configuration upstream")
 
 // QuestionStream query upstream

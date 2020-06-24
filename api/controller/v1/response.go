@@ -8,9 +8,15 @@ var (
 
 	// ErrInternalServer server internal
 	ErrInternalServer = Response{Code: 1001, Message: "系统错误"}
-	ErrMissParams     = Response{Code: 1002, Message: "缺少参数"}
-	ErrFailParams     = Response{Code: 1003, Message: "参数格式错误"}
-	ErrNotExist       = Response{Code: 1004, Message: "数据不存在"}
+
+	// ErrMissParams params miss
+	ErrMissParams = Response{Code: 1002, Message: "缺少参数"}
+
+	// ErrFailParams params fail
+	ErrFailParams = Response{Code: 1003, Message: "参数格式错误"}
+
+	// ErrNotExist record not find
+	ErrNotExist = Response{Code: 1004, Message: "数据不存在"}
 )
 
 // Response response struct

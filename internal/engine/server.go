@@ -11,6 +11,7 @@ import (
 	"github.com/dingdayu/dnsx/pkg/log"
 )
 
+// Server server
 type Server struct {
 	udp53 *dns.Server
 	tcp53 *dns.Server
