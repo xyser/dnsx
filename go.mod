@@ -11,7 +11,7 @@ require (
 	github.com/go-playground/locales v0.13.0
 	github.com/go-playground/universal-translator v0.17.0
 	github.com/go-playground/validator/v10 v10.3.0
-	github.com/go-redis/redis v6.15.8+incompatible
+	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/gomodule/redigo v1.8.2 // indirect
 	github.com/jinzhu/gorm v1.9.15
 	github.com/joho/godotenv v1.3.0
