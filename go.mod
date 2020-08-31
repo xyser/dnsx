@@ -20,7 +20,7 @@ require (
 	github.com/mitchellh/mapstructure v1.3.2 // indirect
 	github.com/onsi/ginkgo v1.7.0 // indirect
 	github.com/onsi/gomega v1.4.3 // indirect
-	github.com/panjf2000/ants/v2 v2.4.1
+	github.com/panjf2000/ants/v2 v2.4.2
 	github.com/pelletier/go-toml v1.8.0 // indirect
 	github.com/prometheus/client_golang v1.7.1
 	github.com/spf13/afero v1.3.0 // indirect
