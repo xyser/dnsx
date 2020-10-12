@@ -16,7 +16,7 @@ require (
 	github.com/jinzhu/gorm v1.9.15
 	github.com/joho/godotenv v1.3.0
 	github.com/json-iterator/go v1.1.10
-	github.com/miekg/dns v1.1.30
+	github.com/miekg/dns v1.1.32
 	github.com/mitchellh/mapstructure v1.3.2 // indirect
 	github.com/onsi/ginkgo v1.7.0 // indirect
 	github.com/onsi/gomega v1.4.3 // indirect
