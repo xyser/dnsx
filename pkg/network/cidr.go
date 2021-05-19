@@ -101,13 +101,13 @@ func getIPSeg3Range(ipSeg []string, maskLen int) (int, int) {
 		segIP, _ := strconv.Atoi(ipSeg[2])
 		return segIP, segIP
 	}
-	seg, _ := strconv.Atoi(ipSeg[2])
+	seg, _ := strconv.ParseUint(ipSeg[2], 10, 8)
 	return getIPSegRange(uint8(seg), uint8(24-maskLen))
 }
 
 // getIPSeg4Range 得到第四段IP的区间（第一片段.第二片段.第三片段.第四片段）
 func getIPSeg4Range(ipSeg []string, maskLen int) (int, int) {
-	seg, _ := strconv.Atoi(ipSeg[3])
+	seg, _ := strconv.ParseUint(ipSeg[3], 10, 8)
 	segMinIP, segMaxIP := getIPSegRange(uint8(seg), uint8(32-maskLen))
 	return segMinIP + 1, segMaxIP
 }
