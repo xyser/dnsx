@@ -15,7 +15,7 @@ require (
 	github.com/gomodule/redigo v1.8.2 // indirect
 	github.com/jinzhu/gorm v1.9.16
 	github.com/joho/godotenv v1.3.0
-	github.com/json-iterator/go v1.1.10
+	github.com/json-iterator/go v1.1.12
 	github.com/miekg/dns v1.1.39
 	github.com/mitchellh/mapstructure v1.3.2 // indirect
 	github.com/panjf2000/ants/v2 v2.4.3
