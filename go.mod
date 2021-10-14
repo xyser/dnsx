@@ -6,8 +6,8 @@ require (
 	github.com/alicebob/gopher-json v0.0.0-20200520072559-a9ecdc9d1d3a // indirect
 	github.com/alicebob/miniredis v2.5.0+incompatible
 	github.com/allegro/bigcache v1.2.1
-	github.com/fsnotify/fsnotify v1.4.9
-	github.com/gin-gonic/gin v1.6.3
+	github.com/fsnotify/fsnotify v1.5.1
+	github.com/gin-gonic/gin v1.7.4
 	github.com/go-playground/locales v0.13.0
 	github.com/go-playground/universal-translator v0.17.0
 	github.com/go-playground/validator/v10 v10.4.1
@@ -18,8 +18,6 @@ require (
 	github.com/json-iterator/go v1.1.10
 	github.com/miekg/dns v1.1.39
 	github.com/mitchellh/mapstructure v1.3.2 // indirect
-	github.com/onsi/ginkgo v1.7.0 // indirect
-	github.com/onsi/gomega v1.4.3 // indirect
 	github.com/panjf2000/ants/v2 v2.4.3
 	github.com/pelletier/go-toml v1.8.0 // indirect
 	github.com/prometheus/client_golang v1.9.0
