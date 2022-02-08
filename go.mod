@@ -28,8 +28,7 @@ require (
 	github.com/spf13/viper v1.7.0
 	github.com/yuin/gopher-lua v0.0.0-20200603152657-dc2b0ca8b37e // indirect
 	go.uber.org/automaxprocs v1.4.0
-	go.uber.org/zap v1.16.0
-	golang.org/x/text v0.3.3 // indirect
+	go.uber.org/zap v1.21.0
 	google.golang.org/protobuf v1.24.0 // indirect
 	gopkg.in/ini.v1 v1.57.0 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
