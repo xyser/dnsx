@@ -3,8 +3,8 @@ package dns
 import (
 	"github.com/miekg/dns"
 
-	"github.com/dingdayu/dnsx/model/dao"
-	"github.com/dingdayu/dnsx/pkg/network"
+	"github.com/xyser/dnsx/model/dao"
+	"github.com/xyser/dnsx/pkg/network"
 )
 
 // TypePTR query ptr

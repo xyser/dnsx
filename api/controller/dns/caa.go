@@ -5,7 +5,7 @@ import (
 
 	"github.com/miekg/dns"
 
-	"github.com/dingdayu/dnsx/model/dao"
+	"github.com/xyser/dnsx/model/dao"
 )
 
 // TypeCAA query caa

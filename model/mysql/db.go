@@ -7,11 +7,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/dingdayu/dnsx/pkg/config"
+	"github.com/xyser/dnsx/pkg/config"
+	"gorm.io/gorm/logger"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 )
 
 var once sync.Once
@@ -19,10 +19,11 @@ var db *gorm.DB
 
 // Init db connect
 func Init() {
+	var err error
 	once.Do(func() {
 		// refer https://github.com/go-sql-driver/mysql#dsn-data-source-name for details
 		dsn := config.GetString("mysql.dns")
-		db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+		db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
 			Logger: logger.Default.LogMode(logger.Silent),
 		})
 		if err == nil {
@@ -32,8 +33,8 @@ func Init() {
 			os.Exit(1)
 		}
 
-		sqlDB, err := db.DB()
-		sqlDB.SetConnMaxLifetime(time.Minute * time.Duration(config.GetInt("mysql.conn_max_lifetime")))
+		sqlDB, _ := db.DB()
+		sqlDB.SetConnMaxLifetime(time.Second * time.Duration(config.GetInt("mysql.conn_max_lifetime")))
 		sqlDB.SetMaxIdleConns(config.GetInt("mysql.max_idle_conn"))
 		sqlDB.SetMaxOpenConns(config.GetInt("mysql.max_open_conn"))
 	})

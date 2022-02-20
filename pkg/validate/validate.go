@@ -8,7 +8,7 @@ import (
 
 	"github.com/go-playground/validator/v10"
 
-	customtime "github.com/dingdayu/dnsx/pkg/validate/custom/time"
+	customtime "github.com/xyser/dnsx/pkg/validate/custom/time"
 
 	"github.com/gin-gonic/gin/binding"
 	local "github.com/go-playground/locales/zh"

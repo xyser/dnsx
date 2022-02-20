@@ -6,7 +6,7 @@ import (
 
 	"github.com/miekg/dns"
 
-	"github.com/dingdayu/dnsx/model/dao"
+	"github.com/xyser/dnsx/model/dao"
 )
 
 // TypeTLSA TLSA记录格式: 保存证书关联数据

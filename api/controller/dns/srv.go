@@ -6,7 +6,7 @@ import (
 
 	"github.com/miekg/dns"
 
-	"github.com/dingdayu/dnsx/model/dao"
+	"github.com/xyser/dnsx/model/dao"
 )
 
 // TypeSRV is a specification of servers in the Domain Name System by hostname and port number.

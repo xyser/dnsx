@@ -5,13 +5,13 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/dingdayu/dnsx/api/controller/health"
-	v1 "github.com/dingdayu/dnsx/api/controller/v1"
-	"github.com/dingdayu/dnsx/api/controller/v1/record"
-	"github.com/dingdayu/dnsx/api/middleware"
-	"github.com/dingdayu/dnsx/internal/asset/static"
-	"github.com/dingdayu/dnsx/model/entity"
-	"github.com/dingdayu/dnsx/pkg/config"
+	"github.com/xyser/dnsx/api/controller/health"
+	v1 "github.com/xyser/dnsx/api/controller/v1"
+	"github.com/xyser/dnsx/api/controller/v1/record"
+	"github.com/xyser/dnsx/api/middleware"
+	"github.com/xyser/dnsx/asset"
+	"github.com/xyser/dnsx/model/entity"
+	"github.com/xyser/dnsx/pkg/config"
 
 	"github.com/gin-gonic/gin"
 	"github.com/miekg/dns"
@@ -42,11 +42,11 @@ func initHTTPHandler() {
 
 	// 查询订单的 UI 页面，临时
 	httpHandler.GET("/ui", func(c *gin.Context) {
-		data, _ := static.Asset("ui/index.html")
+		data, _ := asset.UI.ReadFile("ui/index.html")
 		_, _ = c.Writer.Write(data)
 	})
 
-	httpHandler.StaticFS("/asset", static.AssetFile())
+	httpHandler.StaticFS("/asset", http.FS(asset.UI))
 
 	apiv1 := httpHandler.Group("/api/v1")
 

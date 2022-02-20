@@ -8,9 +8,9 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/dingdayu/dnsx/api/router"
-	"github.com/dingdayu/dnsx/internal/engine"
-	"github.com/dingdayu/dnsx/pkg/config"
+	"github.com/xyser/dnsx/api/router"
+	"github.com/xyser/dnsx/internal/engine"
+	"github.com/xyser/dnsx/pkg/config"
 )
 
 // Run server command

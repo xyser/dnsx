@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/dingdayu/dnsx/pkg/log"
+	"github.com/xyser/dnsx/pkg/log"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"

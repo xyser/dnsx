@@ -6,7 +6,7 @@ import (
 
 	"github.com/miekg/dns"
 
-	"github.com/dingdayu/dnsx/model/dao"
+	"github.com/xyser/dnsx/model/dao"
 )
 
 // TypeURI provide a means to resolve hostnames to URIs that can be used by various applications.

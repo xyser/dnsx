@@ -7,8 +7,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/dingdayu/dnsx/model/entity"
-	"github.com/dingdayu/dnsx/pkg/config"
+	"github.com/xyser/dnsx/model/entity"
+	"github.com/xyser/dnsx/pkg/config"
 
 	"github.com/allegro/bigcache"
 	"github.com/miekg/dns"

@@ -8,7 +8,7 @@ import (
 
 	"github.com/miekg/dns"
 
-	"github.com/dingdayu/dnsx/pkg/log"
+	"github.com/xyser/dnsx/pkg/log"
 )
 
 // Server server

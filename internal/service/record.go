@@ -3,8 +3,8 @@ package service
 import (
 	"github.com/miekg/dns"
 
-	v1 "github.com/dingdayu/dnsx/api/controller/v1"
-	"github.com/dingdayu/dnsx/model/dao"
+	v1 "github.com/xyser/dnsx/api/controller/v1"
+	"github.com/xyser/dnsx/model/dao"
 )
 
 // GetRecordList get record list api by service

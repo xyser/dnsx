@@ -1,8 +1,8 @@
 package router
 
 import (
-	dnsc "github.com/dingdayu/dnsx/api/controller/dns"
-	"github.com/dingdayu/dnsx/internal/engine"
+	dnsc "github.com/xyser/dnsx/api/controller/dns"
+	"github.com/xyser/dnsx/internal/engine"
 
 	"github.com/miekg/dns"
 )

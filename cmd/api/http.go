@@ -1,10 +1,10 @@
 package api
 
 import (
-	"github.com/dingdayu/dnsx/api"
-	"github.com/dingdayu/dnsx/model/mysql"
-	"github.com/dingdayu/dnsx/pkg/config"
-	"github.com/dingdayu/dnsx/pkg/validate"
+	"github.com/xyser/dnsx/api"
+	"github.com/xyser/dnsx/model/mysql"
+	"github.com/xyser/dnsx/pkg/config"
+	"github.com/xyser/dnsx/pkg/validate"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"

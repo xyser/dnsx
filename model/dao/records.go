@@ -2,11 +2,12 @@ package dao
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/miekg/dns"
+	"github.com/xyser/dnsx/asset"
 
-	"github.com/dingdayu/dnsx/internal/asset/scripts"
-	"github.com/dingdayu/dnsx/model/mysql"
+	"github.com/xyser/dnsx/model/mysql"
 )
 
 // Record struct
@@ -50,7 +51,7 @@ func (Record) TableName() string {
 func InitRecord() {
 	db := mysql.GetDB()
 	if !db.Migrator().HasTable(Record{}) {
-		if sql, err := scripts.Asset("scripts/sql/record.sql"); err == nil {
+		if sql, err := asset.SQL.ReadFile("sql/record.sql"); err == nil {
 			db.Exec(string(sql))
 		}
 	}
@@ -69,7 +70,9 @@ func GetNameRecord(name string) (rrs []Record, err error) {
 
 // GetRecord query db by where
 func GetRecord(where interface{}) (rrs []Record, err error) {
-	err = mysql.GetDB().Where(where).Find(&rrs).Error
+	db := mysql.GetDB()
+	fmt.Println("db", db)
+	err = db.Where(where).Find(&rrs).Error
 	return rrs, err
 }
 

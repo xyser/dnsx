@@ -7,8 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 
-	v1 "github.com/dingdayu/dnsx/api/controller/v1"
-	"github.com/dingdayu/dnsx/internal/service"
+	v1 "github.com/xyser/dnsx/api/controller/v1"
+	"github.com/xyser/dnsx/internal/service"
 )
 
 // Lists record list api
