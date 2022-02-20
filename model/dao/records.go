@@ -49,7 +49,7 @@ func (Record) TableName() string {
 // InitRecord 检查表是否存在并创建表
 func InitRecord() {
 	db := mysql.GetDB()
-	if !db.HasTable(Record{}) {
+	if !db.Migrator().HasTable(Record{}) {
 		if sql, err := scripts.Asset("scripts/sql/record.sql"); err == nil {
 			db.Exec(string(sql))
 		}
