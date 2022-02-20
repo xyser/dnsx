@@ -43,7 +43,7 @@ func Run() {
 	}
 
 	// Safe exit via signal
-	quit := make(chan os.Signal)
+	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt)
 	<-quit
 	fmt.Println("\n\033[1;30;42m[info]\033[0m Shutdown Server")
