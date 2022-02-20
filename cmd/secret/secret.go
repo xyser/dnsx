@@ -27,8 +27,8 @@ var Cmd = &cobra.Command{
 		key.Protocol = 3
 		key.Algorithm = dns.ECDSAP256SHA256
 
-		//privkey,_ := key.Generate(256)
-		//prive := key.PrivateKeyString(privkey)
+		// privkey,_ := key.Generate(256)
+		// prive := key.PrivateKeyString(privkey)
 
 		prive := "Private-key-format: v1.3\nAlgorithm: 13 (ECDSAP256SHA256)\nPrivateKey: D8GGLJzXo/O3H16PnpGrBNZF18a+w0MTr1Mvnm/25wc=\n"
 
@@ -40,8 +40,8 @@ var Cmd = &cobra.Command{
 		srv.A = net.ParseIP("127.0.0.1")
 
 		// 产生 DS 记录
-		//ds := key.ToDS(dns.SHA256).String()
-		//fmt.Println(ds )
+		// ds := key.ToDS(dns.SHA256).String()
+		// fmt.Println(ds)
 
 		sig := new(dns.RRSIG)
 		sig.Hdr = dns.RR_Header{Name: "dingxiaoyu.com.", Rrtype: dns.TypeRRSIG, Class: dns.ClassINET, Ttl: 14400}

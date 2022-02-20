@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"github.com/dingdayu/dnsx/cmd/api"
-	"github.com/dingdayu/dnsx/cmd/example"
 	"github.com/dingdayu/dnsx/cmd/secret"
 	"github.com/dingdayu/dnsx/pkg/config"
 	"github.com/dingdayu/dnsx/pkg/log"
@@ -30,7 +29,6 @@ func init() {
 
 	RootCmd.AddCommand(api.ServerCmd)
 	RootCmd.AddCommand(secret.Cmd)
-	RootCmd.AddCommand(example.Cmd)
 
 }
 
