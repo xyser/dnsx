@@ -1,4 +1,4 @@
-name: Go
+name: Go multi version build & unit test
 
 on:
   push:
