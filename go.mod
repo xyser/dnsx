@@ -13,11 +13,13 @@ require (
 	github.com/go-playground/validator/v10 v10.10.0
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/gomodule/redigo v1.8.8 // indirect
-	github.com/joho/godotenv v1.3.0
+	github.com/joho/godotenv v1.4.0
 	github.com/json-iterator/go v1.1.12
 	github.com/miekg/dns v1.1.46
-	github.com/panjf2000/ants/v2 v2.4.3
-	github.com/prometheus/client_golang v1.9.0
+	github.com/onsi/ginkgo v1.7.0 // indirect
+	github.com/onsi/gomega v1.4.3 // indirect
+	github.com/panjf2000/ants/v2 v2.4.7
+	github.com/prometheus/client_golang v1.12.1
 	github.com/spf13/afero v1.8.1 // indirect
 	github.com/spf13/cobra v1.3.0
 	github.com/spf13/viper v1.10.1
