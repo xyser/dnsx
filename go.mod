@@ -16,8 +16,10 @@ require (
 	github.com/joho/godotenv v1.3.0
 	github.com/json-iterator/go v1.1.12
 	github.com/miekg/dns v1.1.46
+	github.com/onsi/ginkgo v1.7.0 // indirect
+	github.com/onsi/gomega v1.4.3 // indirect
 	github.com/panjf2000/ants/v2 v2.4.3
-	github.com/prometheus/client_golang v1.9.0
+	github.com/prometheus/client_golang v1.12.1
 	github.com/spf13/afero v1.8.1 // indirect
 	github.com/spf13/cobra v1.3.0
 	github.com/spf13/viper v1.10.1
