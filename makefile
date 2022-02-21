@@ -39,11 +39,6 @@ sonar: outcov
 	  -Dsonar.tests=. -Dsonar.test.inclusions='**/*_test.go' -Dsonar.test.exclusions='**/vendor/**' \
 	  -Dsonar.go.tests.reportPaths=report.json  -Dsonar.go.coverage.reportPaths=coverage.out
 
-asset:
-	go get -u github.com/go-bindata/go-bindata/...
-	cd asset && go-bindata -fs -pkg static -o ../internal/asset/static/bindata.go ui/... && cd ..
-	go-bindata -pkg scripts -o internal/asset/scripts/bindata.go scripts/sql/record.sql
-
 help:
 	@echo "make: compile packages and dependencies"
 	@echo "  make run: go run at server"
