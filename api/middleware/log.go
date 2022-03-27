@@ -5,6 +5,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/xyser/dnsx/pkg/log"
@@ -40,6 +41,9 @@ func WriterLog() gin.HandlerFunc {
 				zap.Int64("latency", latency.Nanoseconds()/1e6),
 				zap.Any("response", blw.body.String()))
 		} else {
+			escapedBody := strings.Replace(string(body), "\n", "", -1)
+			escapedBody = strings.Replace(escapedBody, "\r", "", -1)
+
 			log.New().Named("http_request").Info(c.Request.RequestURI,
 				zap.String("method", c.Request.Method),
 				zap.String("path", c.Request.URL.Path),
@@ -48,7 +52,7 @@ func WriterLog() gin.HandlerFunc {
 				zap.String("ip", c.ClientIP()),
 				zap.Int64("latency", latency.Nanoseconds()/1e6),
 				zap.Any("response", blw.body.String()),
-				zap.ByteString("body", body))
+				zap.String("body", escapedBody))
 		}
 	}
 }
