@@ -13,7 +13,7 @@ require (
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/joho/godotenv v1.4.0
 	github.com/json-iterator/go v1.1.12
-	github.com/miekg/dns v1.1.47
+	github.com/miekg/dns v1.1.49
 	github.com/panjf2000/ants/v2 v2.4.8
 	github.com/prometheus/client_golang v1.12.1
 	github.com/spf13/cobra v1.4.0
