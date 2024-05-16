@@ -5,12 +5,12 @@ Authoritative DNS service and DNS cache service。
 Make DNS as simple as HTTP.
 
 <p style="text-align: center">
-    <a href="https://github.com/dingdayu/dnsx/actions"><img src="https://github.com/dingdayu/dnsx/workflows/Go/badge.svg" alt="Go"></a>
-    <a href="https://codeclimate.com/github/dingdayu/dnsx/maintainability"><img src="https://api.codeclimate.com/v1/badges/eda6760b436abe89af5e/maintainability" /></a>
-    <a href="https://codeclimate.com/github/dingdayu/dnsx/test_coverage"><img src="https://api.codeclimate.com/v1/badges/eda6760b436abe89af5e/test_coverage" /></a>
+    <a href="https://github.com/xyser/dnsx/actions"><img src="https://github.com/dingdayu/dnsx/workflows/Go/badge.svg" alt="Go"></a>
+    <a href="https://codeclimate.com/github/xyser/dnsx/maintainability"><img src="https://api.codeclimate.com/v1/badges/eda6760b436abe89af5e/maintainability" /></a>
+    <a href="https://codeclimate.com/github/xyser/dnsx/test_coverage"><img src="https://api.codeclimate.com/v1/badges/eda6760b436abe89af5e/test_coverage" /></a>
     <a href="https://blog.dingxiaoyu.com"><img src="https://img.shields.io/badge/author-@dingdayu-blue.svg?style=flat" alt="Author"></a>
-    <a href="https://goreportcard.com/report/github.com/dingdayu/dnsx"><img src="https://goreportcard.com/badge/github.com/dingdayu/dnsx" alt="Report"></a>
-    <a href="https://sonarcloud.io/dashboard?id=dingdayu_dnsx"><img src="https://sonarcloud.io/api/project_badges/measure?project=dingdayu_dnsx&metric=alert_status" alt="Quality Gate Status"></a>
+    <a href="https://goreportcard.com/report/github.com/xyser/dnsx"><img src="https://goreportcard.com/badge/github.com/xyser/dnsx" alt="Report"></a>
+    <a href="https://sonarcloud.io/dashboard?id=xyser_dnsx"><img src="https://sonarcloud.io/api/project_badges/measure?project=xyser_dnsx&metric=alert_status" alt="Quality Gate Status"></a>
 </p>
 
 ## Reference
