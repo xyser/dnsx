@@ -5,7 +5,7 @@ Authoritative DNS service and DNS cache service。
 Make DNS as simple as HTTP.
 
 <p style="text-align: center">
-    <a href="https://github.com/xyser/dnsx/actions"><img src="https://github.com/dingdayu/dnsx/workflows/Go/badge.svg" alt="Go"></a>
+    <a href="https://github.com/xyser/dnsx/actions"><img src="https://github.com/xyser/dnsx/actions/workflows/go.yml/badge.svg" alt="Go"></a>
     <a href="https://codeclimate.com/github/xyser/dnsx/maintainability"><img src="https://api.codeclimate.com/v1/badges/eda6760b436abe89af5e/maintainability" /></a>
     <a href="https://codeclimate.com/github/xyser/dnsx/test_coverage"><img src="https://api.codeclimate.com/v1/badges/eda6760b436abe89af5e/test_coverage" /></a>
     <a href="https://blog.dingxiaoyu.com"><img src="https://img.shields.io/badge/author-@dingdayu-blue.svg?style=flat" alt="Author"></a>
